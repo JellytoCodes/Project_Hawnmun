@@ -6,6 +6,9 @@
 #include "Characters/HawnmunCharacterBase.h"
 #include "HawnmunPlayer.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class PROJECTH_API AHawnmunPlayer : public AHawnmunCharacterBase
 {
@@ -18,4 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
+private :
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UCameraComponent> CameraComponent;
 };

@@ -25,7 +25,7 @@ public :
 
 protected :
 	virtual void BeginPlay() override;
-	virtual void SetupInactiveStateInputComponent(UInputComponent* InComponent) override;
+	virtual void SetupInputComponent() override;
 
 private:
 	
