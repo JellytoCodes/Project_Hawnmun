@@ -30,6 +30,7 @@ protected :
 private:
 	
 	void Move(const FInputActionValue& value);
+	void Look(const FInputActionValue& value);
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -43,9 +44,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> LookAction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UDataAsset_InputConfig> InputConfig;
 
 	UPROPERTY()
 	TWeakObjectPtr<UHawnmunAbilitySystemComponent> HawnmunAbilitySystemComponent;
+
+	UPROPERTY()
+	APawn* ControlledPawn = nullptr;
 };

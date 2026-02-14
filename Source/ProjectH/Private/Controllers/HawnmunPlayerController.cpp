@@ -18,8 +18,9 @@ void AHawnmunPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	check(PlayerContext);
+	ControlledPawn = GetPawn<APawn>();
 
+	check(PlayerContext);
 	check(InputConfig);
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -36,7 +37,8 @@ void AHawnmunPlayerController::SetupInputComponent()
 
 	if (HawnmunInputComponent)
 	{
-		HawnmunInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHawnmunPlayerController::Move);
+		HawnmunInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+		HawnmunInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 
 		HawnmunInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
@@ -44,23 +46,38 @@ void AHawnmunPlayerController::SetupInputComponent()
 
 void AHawnmunPlayerController::Move(const FInputActionValue& value)
 {
+	if (ControlledPawn == nullptr) return;
+
 	const FVector2D MovementVector = value.Get<FVector2D>();
 	const FRotator MovementRotation(0.f, GetControlRotation().Yaw, 0.f);
 
-	if (APawn* ControlledPawn = GetPawn<APawn>())
+	if (MovementVector.Y != 0.f)
 	{
-		if (MovementVector.Y != 0.f)
-		{
-			const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
-			ControlledPawn->AddMovementInput(ForwardDirection, MovementVector.Y);
-		}
+		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
+		ControlledPawn->AddMovementInput(ForwardDirection, MovementVector.Y);
+	}
+	
+	if (MovementVector.X != 0.f)
+	{
+		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 
-		if (MovementVector.X != 0.f)
-		{
-			const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
+		ControlledPawn->AddMovementInput(RightDirection, MovementVector.X);
+	}	
+}
 
-			ControlledPawn->AddMovementInput(RightDirection, MovementVector.X);
-		}	
+void AHawnmunPlayerController::Look(const FInputActionValue& value)
+{
+	if (ControlledPawn == nullptr) return;
+
+	const FVector2D LookAxisVector = value.Get<FVector2D>();
+
+	if (LookAxisVector.X != 0.f)
+	{
+		ControlledPawn->AddControllerYawInput(LookAxisVector.X);
+	}
+	if (LookAxisVector.Y != 0.f)
+	{
+		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
 

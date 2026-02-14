@@ -20,7 +20,7 @@ public class ProjectH : ModuleRules
 			"GameplayTags",
 			"AIModule",
 			"Niagara",
-			"MotionWarping"
+			"MotionWarping",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

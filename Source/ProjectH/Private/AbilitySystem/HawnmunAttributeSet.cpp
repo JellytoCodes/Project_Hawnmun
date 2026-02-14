@@ -26,7 +26,7 @@ void UHawnmunAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 {
 	Super::PostGameplayEffectExecute(Data);
 
-
+	
 }
 
 void UHawnmunAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
