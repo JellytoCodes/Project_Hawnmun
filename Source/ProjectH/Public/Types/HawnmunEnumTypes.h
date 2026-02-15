@@ -2,4 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+UENUM(BlueprintType)
+enum class EMovementInput : uint8
+{
+	Forward,
+	Right,
+	Backward,
+	Left,
+
+	End
+};
