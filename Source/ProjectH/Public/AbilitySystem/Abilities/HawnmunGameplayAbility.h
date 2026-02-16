@@ -31,13 +31,13 @@ protected :
 	void ReceiveDeactivate(const FGameplayTag& AbilityTag);
 
 	UFUNCTION(BlueprintPure, Category = "FatedBrand|Ability")
-	UHawnmunAbilitySystemComponent* GetFatedBrandAbilitySystemComponentFromActorInfo() const;
+	UHawnmunAbilitySystemComponent* GetHawnmunAbilitySystemComponentFromActorInfo() const;
 
 	UFUNCTION(BlueprintPure, Category = "FatedBrand|Ability")
-	AHawnmunPlayer* GetFatedBrandCharacterFromActorInfo();
+	AHawnmunPlayer* GetHawnmunCharacterFromActorInfo();
 
 	UFUNCTION(BlueprintPure, Category = "FatedBrand|Ability")
-	AHawnmunEnemy* GetFatedBrandEnemyFromActorInfo();
+	AHawnmunEnemy* GetHawnmunEnemyFromActorInfo();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
@@ -62,6 +62,6 @@ protected :
 
 
 private :
-	TWeakObjectPtr<AHawnmunPlayer> CachedFatedBrandCharacter;
-	TWeakObjectPtr<AHawnmunEnemy> CachedFatedBrandEnemy;
+	TWeakObjectPtr<AHawnmunPlayer> CachedHawnmunCharacter;
+	TWeakObjectPtr<AHawnmunEnemy> CachedHawnmunEnemy;
 };

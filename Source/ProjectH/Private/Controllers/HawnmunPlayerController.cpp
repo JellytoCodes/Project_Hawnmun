@@ -83,17 +83,20 @@ void AHawnmunPlayerController::Look(const FInputActionValue& value)
 
 void AHawnmunPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	//if (GetASC() && GetASC()->HasMatchingGameplayTag())
+	if (GetASC())
+		GetASC()->AbilityInputTagPressed(InputTag);
 }
 
 void AHawnmunPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-
+	if (GetASC())
+		GetASC()->AbilityInputTagReleased(InputTag);
 }
 
 void AHawnmunPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-
+	if (GetASC())
+		GetASC()->AbilityInputTagHeld(InputTag);
 }
 
 UHawnmunAbilitySystemComponent* AHawnmunPlayerController::GetASC()

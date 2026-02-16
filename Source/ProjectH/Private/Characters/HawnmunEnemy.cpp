@@ -4,6 +4,7 @@
 
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 #include "AbilitySystem/HawnmunAttributeSet.h"
+#include "Controllers/HawnmunAIController.h"
 
 AHawnmunEnemy::AHawnmunEnemy()
 {
@@ -15,12 +16,23 @@ AHawnmunEnemy::AHawnmunEnemy()
 	HawnmunAttributeSet = CreateDefaultSubobject<UHawnmunAttributeSet>("AttributeSet");
 }
 
-void AHawnmunEnemy::BeginPlay()
+void AHawnmunEnemy::InitAbilityActorInfo()
 {
-	Super::BeginPlay();
+	Super::InitAbilityActorInfo();
 }
 
 void AHawnmunEnemy::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	HawnmunAIController = Cast<AHawnmunAIController>(NewController);
+	if (BehaviorTree && HawnmunAIController)
+	{
+		HawnmunAIController->RunBehaviorTree(BehaviorTree);
+	}
+
+	if (HawnmunAbilitySystemComponent)
+		AddCharacterAbilities();
+
+	
 }

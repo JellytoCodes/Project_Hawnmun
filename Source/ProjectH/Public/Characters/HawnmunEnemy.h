@@ -6,6 +6,9 @@
 #include "Characters/HawnmunCharacterBase.h"
 #include "HawnmunEnemy.generated.h"
 
+class AHawnmunAIController;
+class UBehaviorTree;
+
 UCLASS()
 class PROJECTH_API AHawnmunEnemy : public AHawnmunCharacterBase
 {
@@ -15,6 +18,12 @@ public :
 	AHawnmunEnemy();
 
 protected :
-	virtual void BeginPlay() override;
+	virtual void InitAbilityActorInfo() override;
 	virtual void PossessedBy(AController* NewController) override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AHawnmunAIController> HawnmunAIController;
 };

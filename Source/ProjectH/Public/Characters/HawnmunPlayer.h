@@ -6,6 +6,7 @@
 #include "Characters/HawnmunCharacterBase.h"
 #include "HawnmunPlayer.generated.h"
 
+class AHawnmunPlayerController;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -17,7 +18,15 @@ class PROJECTH_API AHawnmunPlayer : public AHawnmunCharacterBase
 public :
 	AHawnmunPlayer();
 
+	UFUNCTION(BlueprintGetter)
+	bool GetIsSprinting() const { return bIsSprinting; }
+
+	UFUNCTION(BlueprintSetter)
+	void SetIsSprinting(const bool InSprinting) { bIsSprinting = InSprinting; }
+
 protected:
+	virtual void InitAbilityActorInfo() override;
+
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
@@ -27,4 +36,11 @@ private :
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	TWeakObjectPtr<AHawnmunPlayerController> PlayerController;
+
+	bool bIsSprinting;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stamina")
+	TSubclassOf<UGameplayEffect> StaminaRegen;
 };

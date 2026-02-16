@@ -22,16 +22,25 @@ void AHawnmunCharacterBase::BeginPlay()
 	
 }
 
-void AHawnmunCharacterBase::Tick(float DeltaTime)
+void AHawnmunCharacterBase::InitAbilityActorInfo()
 {
-	Super::Tick(DeltaTime);
 
 }
 
-void AHawnmunCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AHawnmunCharacterBase::AddCharacterAbilities() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (!StartUpData.IsNull())
+	{
+		if (UDataAsset_StartUpDataBase* LoadedData = StartUpData.LoadSynchronous())
+		{
+			UHawnmunAbilitySystemComponent* HawnmunASC = CastChecked<UHawnmunAbilitySystemComponent>(HawnmunAbilitySystemComponent);
 
+			LoadedData->InitializeGameplayEffect(HawnmunASC, StartUpCharacterName, 1);
+			
+			HawnmunASC->AddCharacterActivateAbilities(LoadedData->StartUpOffensiveAbilities);
+			HawnmunASC->AddCharacterPassiveAbilities(LoadedData->StartUpPassiveAbilities);
+		}
+	}	
 }
 
 void AHawnmunCharacterBase::PossessedBy(AController* NewController)

@@ -3,10 +3,11 @@
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 
 #include "AbilitySystem/Abilities/HawnmunGameplayAbility.h"
+#include "ProjectH/ProjectH.h"
 
 void UHawnmunAbilitySystemComponent::AddCharacterActivateAbilities(const TArray<TSubclassOf<UHawnmunGameplayAbility>>& ActivateAbilities)
 {
-	for (const TSubclassOf<UHawnmunGameplayAbility> AbilityClass : ActivateAbilities)
+	for (const auto& AbilityClass : ActivateAbilities)
 	{
 		const UHawnmunGameplayAbility* FatedBrandAbility = AbilityClass.GetDefaultObject();
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
@@ -21,7 +22,7 @@ void UHawnmunAbilitySystemComponent::AddCharacterActivateAbilities(const TArray<
 
 void UHawnmunAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubclassOf<UHawnmunGameplayAbility>>& PassiveAbilities)
 {
-	for (const TSubclassOf<UHawnmunGameplayAbility> AbilityClass : PassiveAbilities)
+	for (const auto& AbilityClass : PassiveAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		GiveAbility(AbilitySpec);
@@ -61,9 +62,10 @@ void UHawnmunAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag&
 	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		AbilitySpecInputReleased(AbilitySpec);
 		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && AbilitySpec.IsActive() && !IsPassiveAbility(AbilitySpec))
 		{
+			AbilitySpecInputReleased(AbilitySpec);
+
 			const UGameplayAbility* Ability = AbilitySpec.GetPrimaryInstance();
 			PRAGMA_DISABLE_DEPRECATION_WARNINGS
 			const FPredictionKey PredictionKey = Ability == nullptr ? AbilitySpec.ActivationInfo.GetActivationPredictionKey() : Ability->GetCurrentActivationInfo().GetActivationPredictionKey();

@@ -8,9 +8,6 @@
 #include "Types/HawnmunStructTypes.h"
 #include "DataAsset_AbilityInfo.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PROJECTH_API UDataAsset_AbilityInfo : public UDataAsset
 {

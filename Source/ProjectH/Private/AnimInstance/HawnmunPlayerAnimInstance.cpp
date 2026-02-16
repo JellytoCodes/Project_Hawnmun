@@ -40,6 +40,7 @@ void UHawnmunPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	InternalCrouching		= MovementComponent->IsCrouching();
 	InternalIsFalling		= MovementComponent->IsFalling();
+	InternalIsSprinting		= HawnmunPlayer->GetIsSprinting();
 
 	IsTurnCurveValue		= GetCurveValue(TEXT("IsTurn"));
 	DistanceCurveValue		= GetCurveValue(TEXT("DistanceCurve"));
@@ -63,6 +64,7 @@ void UHawnmunPlayerAnimInstance::UpdateMovementData()
 
 	bIsFalling = InternalIsFalling;
 	bIsCrouching = InternalCrouching;
+	bIsSprinting = InternalIsSprinting;
 
 	Direction = CalculateDirection(FVector(Velocity.X, Velocity.Y, 0.f), InternalRotation);
 	Direction = FRotator::NormalizeAxis(Direction);

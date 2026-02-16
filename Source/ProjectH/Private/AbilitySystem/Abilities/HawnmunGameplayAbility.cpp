@@ -18,9 +18,7 @@ FDamageEffectParams UHawnmunGameplayAbility::MakeDamageEffectParamsFromClassDefa
 	return FDamageEffectParams();
 }
 
-void UHawnmunGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+void UHawnmunGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -33,25 +31,25 @@ void UHawnmunGameplayAbility::ReceiveDeactivate(const FGameplayTag& AbilityTag)
 	}
 }
 
-UHawnmunAbilitySystemComponent* UHawnmunGameplayAbility::GetFatedBrandAbilitySystemComponentFromActorInfo() const
+UHawnmunAbilitySystemComponent* UHawnmunGameplayAbility::GetHawnmunAbilitySystemComponentFromActorInfo() const
 {
 	return Cast<UHawnmunAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
 }
 
-AHawnmunPlayer* UHawnmunGameplayAbility::GetFatedBrandCharacterFromActorInfo()
+AHawnmunPlayer* UHawnmunGameplayAbility::GetHawnmunCharacterFromActorInfo()
 {
-	if (!CachedFatedBrandCharacter.IsValid())
+	if (!CachedHawnmunCharacter.IsValid())
 	{
-		CachedFatedBrandCharacter = Cast<AHawnmunPlayer>(CurrentActorInfo->AvatarActor);
+		CachedHawnmunCharacter = Cast<AHawnmunPlayer>(CurrentActorInfo->AvatarActor);
 	}
-	return CachedFatedBrandCharacter.IsValid() ? CachedFatedBrandCharacter.Get() : nullptr;
+	return CachedHawnmunCharacter.IsValid() ? CachedHawnmunCharacter.Get() : nullptr;
 }
 
-AHawnmunEnemy* UHawnmunGameplayAbility::GetFatedBrandEnemyFromActorInfo()
+AHawnmunEnemy* UHawnmunGameplayAbility::GetHawnmunEnemyFromActorInfo()
 {
-	if (!CachedFatedBrandEnemy.IsValid())
+	if (!CachedHawnmunEnemy.IsValid())
 	{
-		CachedFatedBrandEnemy = Cast<AHawnmunEnemy>(CurrentActorInfo->AvatarActor);
+		CachedHawnmunEnemy = Cast<AHawnmunEnemy>(CurrentActorInfo->AvatarActor);
 	}
-	return CachedFatedBrandEnemy.IsValid() ? CachedFatedBrandEnemy.Get() : nullptr;
+	return CachedHawnmunEnemy.IsValid() ? CachedHawnmunEnemy.Get() : nullptr;
 }

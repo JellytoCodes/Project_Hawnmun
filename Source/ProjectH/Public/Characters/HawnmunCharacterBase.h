@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/DataAsset_StartUpDataBase.h"
 #include "GameFramework/Character.h"
 #include "HawnmunCharacterBase.generated.h"
 
@@ -21,9 +22,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	UHawnmunAbilitySystemComponent* GetAbilitySystemComponent() const;
 
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
@@ -33,8 +31,14 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> HawnmunAttributeSet;
-	
-	
-private :
 
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+	EStartUpCharacterName StartUpCharacterName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterData")
+	TSoftObjectPtr<UDataAsset_StartUpDataBase> StartUpData;
+
+	virtual void InitAbilityActorInfo();
+
+	void AddCharacterAbilities() const;
 };

@@ -2,9 +2,14 @@
 
 #include "AbilitySystem/HawnmunAttributeSet.h"
 
+#include "GameplayEffectExtension.h"
+#include "HawnmunGameplayTags.h"
+
 UHawnmunAttributeSet::UHawnmunAttributeSet()
 {
-
+	InitStamina(100.f);
+	InitStaminaRegeneration(1.f);
+	InitHealthRegeneration(1.f);
 }
 
 void UHawnmunAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -26,12 +31,26 @@ void UHawnmunAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffec
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	
-}
+	if (!GetOwningAbilitySystemComponent()) return;
 
-void UHawnmunAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
-{
-	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+	const bool bStaminaChanged = (Data.EvaluatedData.Attribute == GetStaminaAttribute()) || (Data.EvaluatedData.Attribute == GetMaxStaminaAttribute());
 
+	if (bStaminaChanged)
+	{
+		const float MaxSta = GetMaxStamina();
+		const float Sta = GetStamina();
+		const bool bShouldBeFull = (Sta >= MaxSta - 0.01f);
 
+		const FGameplayTag FullTag = HawnmunGameplayTags::State_Stamina_Full;
+		const bool bIsFullNow = GetOwningAbilitySystemComponent()->HasMatchingGameplayTag(FullTag);
+
+		if (bShouldBeFull && !bIsFullNow)
+		{
+			GetOwningAbilitySystemComponent()->AddLooseGameplayTag(FullTag);
+		}
+		else if (!bShouldBeFull && bIsFullNow)
+		{
+			GetOwningAbilitySystemComponent()->RemoveLooseGameplayTag(FullTag);
+		}
+	}
 }

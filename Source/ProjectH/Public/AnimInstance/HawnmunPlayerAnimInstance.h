@@ -38,8 +38,9 @@ private:
 	FVector  InternalAcceleration = FVector::ZeroVector;
 	FRotator InternalRotation = FRotator::ZeroRotator;
 
-	bool  InternalCrouching = false;
-	bool  InternalIsFalling = false;
+	bool	InternalCrouching = false;
+	bool	InternalIsFalling = false;
+	bool	InternalIsSprinting = false;
 
 	float IsTurnCurveValue = 0.f;
 	float DistanceCurveValue = 0.f;
