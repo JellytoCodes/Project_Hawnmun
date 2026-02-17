@@ -12,3 +12,12 @@ enum class EMovementInput : uint8
 
 	End
 };
+
+UENUM()
+enum class EHawnmunConfirmType : uint8
+{
+	Yes,
+	No,
+
+	End
+};

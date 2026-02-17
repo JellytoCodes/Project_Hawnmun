@@ -18,4 +18,9 @@ namespace HawnmunGameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::State_Stamina_RegenBlocked, "State.Stamina.RegenBlocked")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::State_Stamina_Full, "State.Stamina.Full")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::State_Dead, "State.Dead")
+
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_Strafing, "Enemy.State.Strafing")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_UnderAttack, "Enemy.State.UnderAttack")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_Unblockable, "Enemy.State.Unblockable")
 }
