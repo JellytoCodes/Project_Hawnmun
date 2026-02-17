@@ -17,6 +17,8 @@ class PROJECTH_API AHawnmunEnemy : public AHawnmunCharacterBase
 public :
 	AHawnmunEnemy();
 
+	void SetSpawnedActorByBlackBoardKey(AActor* spawnedActor);
+
 protected :
 	virtual void InitAbilityActorInfo() override;
 	virtual void PossessedBy(AController* NewController) override;

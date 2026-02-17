@@ -5,9 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
+#include "HawnmunGameplayTags.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 #include "Input/HawnmunEnhancedInputComponent.h"
-#include "ProjectH/ProjectH.h"
 
 AHawnmunPlayerController::AHawnmunPlayerController()
 {
@@ -40,15 +40,18 @@ void AHawnmunPlayerController::SetupInputComponent()
 		HawnmunInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 		HawnmunInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 
+		HawnmunInputComponent->BindAction(SwitchTargetAction, ETriggerEvent::Started, this, &ThisClass::SwitchTarget);
+
 		HawnmunInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 	}
 }
 
-void AHawnmunPlayerController::Move(const FInputActionValue& value)
+void AHawnmunPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC()->HasMatchingGameplayTag(HawnmunGameplayTags::Input_Key_Locked)) return;
 	if (ControlledPawn == nullptr) return;
 
-	const FVector2D MovementVector = value.Get<FVector2D>();
+	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
 	const FRotator MovementRotation(0.f, GetControlRotation().Yaw, 0.f);
 
 	if (MovementVector.Y != 0.f)
@@ -65,11 +68,11 @@ void AHawnmunPlayerController::Move(const FInputActionValue& value)
 	}	
 }
 
-void AHawnmunPlayerController::Look(const FInputActionValue& value)
+void AHawnmunPlayerController::Look(const FInputActionValue& InputActionValue)
 {
 	if (ControlledPawn == nullptr) return;
 
-	const FVector2D LookAxisVector = value.Get<FVector2D>();
+	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
 
 	if (LookAxisVector.X != 0.f)
 	{
@@ -79,6 +82,16 @@ void AHawnmunPlayerController::Look(const FInputActionValue& value)
 	{
 		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AHawnmunPlayerController::SwitchTarget(const FInputActionValue& InputActionValue)
+{
+	const float SwitchValue = InputActionValue.Get<float>();
+	const FGameplayEventData Data;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetPawn(),
+		SwitchValue > 0.f ? HawnmunGameplayTags::Event_SwitchTarget_Left : HawnmunGameplayTags::Event_SwitchTarget_Right,
+		Data);
 }
 
 void AHawnmunPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -95,8 +108,8 @@ void AHawnmunPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AHawnmunPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	if (GetASC())
-		GetASC()->AbilityInputTagHeld(InputTag);
+	//if (GetASC())
+		//GetASC()->AbilityInputTagHeld(InputTag);
 }
 
 UHawnmunAbilitySystemComponent* AHawnmunPlayerController::GetASC()

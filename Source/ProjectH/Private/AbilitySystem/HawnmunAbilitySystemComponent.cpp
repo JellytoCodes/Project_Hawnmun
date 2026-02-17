@@ -2,6 +2,7 @@
 
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 
+#include "HawnmunGameplayTags.h"
 #include "AbilitySystem/Abilities/HawnmunGameplayAbility.h"
 #include "ProjectH/ProjectH.h"
 
@@ -39,6 +40,14 @@ void UHawnmunAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& 
 		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && !IsPassiveAbility(AbilitySpec))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
+
+			// 타겟 록온 해제
+			if (AbilitySpec.IsActive() && InInputTag.MatchesTag(HawnmunGameplayTags::Input_Key_MButton))
+			{
+				CancelAbilityHandle(AbilitySpec.Handle);
+				return;
+			}
+
 			if (!AbilitySpec.IsActive())
 			{
 				TryActivateAbility(AbilitySpec.Handle);
@@ -62,6 +71,12 @@ void UHawnmunAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag&
 	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
+		if (InInputTag.MatchesTag(HawnmunGameplayTags::Input_Key_MButton) && AbilitySpec.IsActive())
+		{
+			//CancelAbilityHandle(AbilitySpec.Handle);
+			return;
+		}
+
 		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && AbilitySpec.IsActive() && !IsPassiveAbility(AbilitySpec))
 		{
 			AbilitySpecInputReleased(AbilitySpec);

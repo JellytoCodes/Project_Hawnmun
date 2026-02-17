@@ -4,7 +4,9 @@
 
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 #include "AbilitySystem/HawnmunAttributeSet.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Controllers/HawnmunAIController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AHawnmunEnemy::AHawnmunEnemy()
 {
@@ -14,6 +16,14 @@ AHawnmunEnemy::AHawnmunEnemy()
 
 	HawnmunAbilitySystemComponent = CreateDefaultSubobject<UHawnmunAbilitySystemComponent>("AbilitySystemComponent");
 	HawnmunAttributeSet = CreateDefaultSubobject<UHawnmunAttributeSet>("AttributeSet");
+}
+
+void AHawnmunEnemy::SetSpawnedActorByBlackBoardKey(AActor* spawnedActor)
+{
+		if (UBlackboardComponent* BlackboardComponent = HawnmunAIController->GetBlackboardComponent())
+	{
+		BlackboardComponent->SetValueAsObject("SpawnedActor", spawnedActor);
+	}
 }
 
 void AHawnmunEnemy::InitAbilityActorInfo()
@@ -29,6 +39,11 @@ void AHawnmunEnemy::PossessedBy(AController* NewController)
 	if (BehaviorTree && HawnmunAIController)
 	{
 		HawnmunAIController->RunBehaviorTree(BehaviorTree);
+
+		if (UBlackboardComponent* BlackboardComponent = HawnmunAIController->GetBlackboardComponent())
+		{
+			BlackboardComponent->SetValueAsFloat("DefaultMaxWalkSpeed", GetCharacterMovement()->MaxWalkSpeed);
+		}
 	}
 
 	if (HawnmunAbilitySystemComponent)

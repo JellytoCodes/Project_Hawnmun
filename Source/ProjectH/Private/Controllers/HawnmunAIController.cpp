@@ -37,12 +37,5 @@ void AHawnmunAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus S
 				BlackboardComponent->SetValueAsObject("TargetActor", Actor);
 			}
 		}
-		else
-		{
-			if (!Stimulus.WasSuccessfullySensed())
-			{
-				BlackboardComponent->SetValueAsObject("TargetActor", nullptr);
-			}
-		}
 	}
 }
