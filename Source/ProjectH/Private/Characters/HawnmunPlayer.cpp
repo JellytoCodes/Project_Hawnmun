@@ -35,6 +35,11 @@ AHawnmunPlayer::AHawnmunPlayer()
 }
 
 
+void AHawnmunPlayer::Die()
+{
+	Super::Die();
+}
+
 void AHawnmunPlayer::InitAbilityActorInfo()
 {
 	if (!PlayerController.IsValid()) return;

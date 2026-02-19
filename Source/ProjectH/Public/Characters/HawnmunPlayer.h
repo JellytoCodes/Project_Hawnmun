@@ -24,6 +24,8 @@ public :
 	UFUNCTION(BlueprintSetter)
 	void SetIsSprinting(const bool InSprinting) { bIsSprinting = InSprinting; }
 
+	virtual void Die() override;
+
 protected:
 	virtual void InitAbilityActorInfo() override;
 

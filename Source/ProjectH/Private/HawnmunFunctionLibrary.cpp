@@ -3,6 +3,7 @@
 #include "HawnmunFunctionLibrary.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GenericTeamAgentInterface.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 
 UHawnmunAbilitySystemComponent* UHawnmunFunctionLibrary::NativeGetHawnmunASCFromActor(AActor* InActor)
@@ -37,4 +38,18 @@ bool UHawnmunFunctionLibrary::NativeDoesActorHaveTag(AActor* InActor, FGameplayT
 void UHawnmunFunctionLibrary::BP_DoesActorHaveTag(AActor* InActor, FGameplayTag TagToCheck, EHawnmunConfirmType& OutConfirmType)
 {
 	OutConfirmType = NativeDoesActorHaveTag(InActor, TagToCheck) ? EHawnmunConfirmType::Yes : EHawnmunConfirmType::No;
+}
+
+bool UHawnmunFunctionLibrary::IsTargetPawnHostile(const APawn* QueryPawn, const APawn* TargetPawn)
+{
+	check(QueryPawn && TargetPawn);
+
+	const IGenericTeamAgentInterface* QueryTeamAgent = Cast<IGenericTeamAgentInterface>(QueryPawn->GetController());
+	const IGenericTeamAgentInterface* TargetTeamAgent = Cast<IGenericTeamAgentInterface>(TargetPawn->GetController());
+
+	if (QueryTeamAgent && TargetTeamAgent)
+	{
+		return QueryTeamAgent->GetGenericTeamId() != TargetTeamAgent->GetGenericTeamId();
+	}
+	return false;
 }

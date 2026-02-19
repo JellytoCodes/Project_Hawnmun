@@ -19,6 +19,8 @@ public :
 
 	void SetSpawnedActorByBlackBoardKey(AActor* spawnedActor);
 
+	virtual void Die() override;
+
 protected :
 	virtual void InitAbilityActorInfo() override;
 	virtual void PossessedBy(AController* NewController) override;

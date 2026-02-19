@@ -29,4 +29,7 @@ public :
 
 	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (DisplayName = "Dose Actor Have Tag", ExpandEnumAsExecs = "OutConfirmType"))
 	static void BP_DoesActorHaveTag(AActor* InActor, FGameplayTag TagToCheck, EHawnmunConfirmType& OutConfirmType);
+
+	UFUNCTION(BlueprintCallable, Category = "FatedBrandFunctionBibrary|Hostile")
+	static bool IsTargetPawnHostile(const APawn* QueryPawn, const APawn* TargetPawn);
 };

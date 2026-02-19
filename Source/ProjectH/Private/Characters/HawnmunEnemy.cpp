@@ -26,6 +26,11 @@ void AHawnmunEnemy::SetSpawnedActorByBlackBoardKey(AActor* spawnedActor)
 	}
 }
 
+void AHawnmunEnemy::Die()
+{
+	Super::Die();
+}
+
 void AHawnmunEnemy::InitAbilityActorInfo()
 {
 	Super::InitAbilityActorInfo();

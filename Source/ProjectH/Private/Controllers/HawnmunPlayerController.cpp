@@ -11,7 +11,12 @@
 
 AHawnmunPlayerController::AHawnmunPlayerController()
 {
+	PlayerId = FGenericTeamId(0);
+}
 
+FGenericTeamId AHawnmunPlayerController::GetGenericTeamId() const
+{
+	return PlayerId;
 }
 
 void AHawnmunPlayerController::BeginPlay()

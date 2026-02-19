@@ -26,6 +26,17 @@ AHawnmunAIController::AHawnmunAIController()
 	SetGenericTeamId(FGenericTeamId(1));
 }
 
+ETeamAttitude::Type AHawnmunAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	const APawn* PawnToCheck = Cast<const APawn>(&Other);
+	const IGenericTeamAgentInterface* OtherTeamAgent = Cast<const IGenericTeamAgentInterface>(PawnToCheck->GetController());
+	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() < GetGenericTeamId())
+	{
+		return ETeamAttitude::Hostile;
+	}
+	return ETeamAttitude::Friendly;
+}
+
 void AHawnmunAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (UBlackboardComponent* BlackboardComponent = GetBlackboardComponent())

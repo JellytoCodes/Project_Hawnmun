@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/PlayerController.h"
 #include "HawnmunPlayerController.generated.h"
 
@@ -16,12 +17,14 @@ class UInputAction;
 class UInputMappingContext;
 
 UCLASS()
-class PROJECTH_API AHawnmunPlayerController : public APlayerController
+class PROJECTH_API AHawnmunPlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public :
 	AHawnmunPlayerController();
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 protected :
 	virtual void BeginPlay() override;
@@ -60,4 +63,6 @@ private:
 
 	UPROPERTY()
 	APawn* ControlledPawn = nullptr;
+
+	FGenericTeamId PlayerId;
 };

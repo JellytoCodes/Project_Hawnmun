@@ -18,6 +18,8 @@ class PROJECTH_API AHawnmunAIController : public AAIController
 public :
 	AHawnmunAIController();
 
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
 private :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAIPerceptionComponent> EnemyPerceptionComponent;

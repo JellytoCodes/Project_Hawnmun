@@ -3,16 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "AbilitySystem/DataAsset_StartUpDataBase.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CombatInterface.h"
 #include "HawnmunCharacterBase.generated.h"
 
+class UBoxComponent;
 class UHawnmunAbilitySystemComponent;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
+UENUM(BlueprintType)
+enum class EToggleDamageType : uint8
+{
+	EquippedWeapon,
+	LeftHand,
+	RightHand
+};
+
 UCLASS()
-class PROJECTH_API AHawnmunCharacterBase : public ACharacter
+class PROJECTH_API AHawnmunCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -20,7 +31,9 @@ public:
 	AHawnmunCharacterBase();
 
 	UFUNCTION(BlueprintPure)
-	UHawnmunAbilitySystemComponent* GetAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void Die() override;
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;
@@ -41,4 +54,38 @@ protected:
 	virtual void InitAbilityActorInfo();
 
 	void AddCharacterAbilities() const;
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+#pragma region CombatCollision
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Weapon")
+	TObjectPtr<UStaticMeshComponent> Weapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat|Body")
+	TObjectPtr<UBoxComponent> WeaponCollisionBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat|Body")
+	TObjectPtr<UBoxComponent> LeftHandCollisionBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat|Body")
+	TObjectPtr<UBoxComponent> RightHandCollisionBox;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Body")
+	FName WeaponCollisionBoxAttachBoneName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Body")
+	FName LeftHandCollisionBoxAttachBoneName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Body")
+	FName RightHandCollisionBoxAttachBoneName;
+	
+	void SetToggleCollisionEnabled(const EToggleDamageType ToggleDamageType, const ECollisionEnabled::Type CurrentCollisionType) const;
+	void OnHitTargetActor(AActor* HitActor);
+
+	UFUNCTION()
+	virtual void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	EToggleDamageType CurrentDamageType = EToggleDamageType::EquippedWeapon;
+#pragma endregion
 };

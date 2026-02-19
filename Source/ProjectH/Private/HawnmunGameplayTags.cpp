@@ -21,7 +21,7 @@ namespace HawnmunGameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Cost_Sprint, "Cost.Sprint")
 
-	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Ability_Roll, "Ability.Roll")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Ability_Rolling, "Ability.Rolling")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Ability_Sprint, "Ability.Sprint")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Ability_TargetLock, "Ability.TargetLock")
 
