@@ -9,6 +9,7 @@
 #include "AbilitySystem/HawnmunAttributeSet.h"
 #include "Components/BoxComponent.h"
 #include "MotionWarpingComponent.h"
+#include "ProjectH/ProjectH.h"
 
 AHawnmunCharacterBase::AHawnmunCharacterBase()
 {
@@ -17,9 +18,11 @@ AHawnmunCharacterBase::AHawnmunCharacterBase()
 	Weapon = CreateDefaultSubobject<UStaticMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Weapon->SetGenerateOverlapEvents(false);
 
 	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>("WeaponCollisionBox");
-	WeaponCollisionBox->SetupAttachment(GetMesh());
+	WeaponCollisionBox->SetupAttachment(Weapon);
+	WeaponCollisionBox->SetCollisionObjectType(ECC_Weapon);
 	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
 
@@ -32,6 +35,8 @@ AHawnmunCharacterBase::AHawnmunCharacterBase()
 	RightHandCollisionBox->SetupAttachment(GetMesh());
 	RightHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RightHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
+
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
 }
 
 UAbilitySystemComponent* AHawnmunCharacterBase::GetAbilitySystemComponent() const

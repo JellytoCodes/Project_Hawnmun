@@ -2,20 +2,34 @@
 
 
 #include "AbilitySystem/Abilities/HawnmunGameplayAbility.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
+#include "HawnmunFunctionLibrary.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 #include "Characters/HawnmunPlayer.h"
 #include "Characters/HawnmunEnemy.h"
 
 FDamageEffectParams UHawnmunGameplayAbility::CauseDamage(AActor* TargetActor)
 {
-	// TODO : 데미지 적용 구현
-	return FDamageEffectParams();
+	const FDamageEffectParams CauseDamageParams = MakeDamageEffectParamsFromClassDefaults(TargetActor);
+
+	UHawnmunFunctionLibrary::ApplyDamageEffect(CauseDamageParams);
+
+	return CauseDamageParams;
 }
 
 FDamageEffectParams UHawnmunGameplayAbility::MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor) const
 {
-	// TODO : 데미지 파라미터 구현
-	return FDamageEffectParams();
+	FDamageEffectParams Params;
+
+	Params.WorldContextObject = GetAvatarActorFromActorInfo();
+	Params.DamageGameplayEffectClass = DamageEffectClass;
+	Params.DamageType = DamageType;
+	Params.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+	Params.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	Params.BaseDamage = Damage;
+	Params.AbilityLevel = GetAbilityLevel();
+	return Params;
 }
 
 void UHawnmunGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

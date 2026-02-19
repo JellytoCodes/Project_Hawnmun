@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Types/HawnmunEnumTypes.h"
+#include "Types/HawnmunStructTypes.h"
 #include "HawnmunFunctionLibrary.generated.h"
 
 class UHawnmunAbilitySystemComponent;
@@ -32,4 +33,14 @@ public :
 
 	UFUNCTION(BlueprintCallable, Category = "FatedBrandFunctionBibrary|Hostile")
 	static bool IsTargetPawnHostile(const APawn* QueryPawn, const APawn* TargetPawn);
+
+	UFUNCTION(BlueprintCallable, Category = "FatedBrandFunctionBibrary|Damage")
+	static FGameplayEffectContextHandle ApplyDamageEffect(FDamageEffectParams DamageEffectParams);
+	
+	UFUNCTION(BlueprintCallable, Category = "FatedBrandFunctionBibrary|GameplayEffects")
+	static void GetLivePlayersWithinCircle(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintCallable, Category = "FatedBrandFunctionBibrary|GameplayEffects")
+	static void GetLivePlayersWithinLine(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const FVector& Start, const FVector& End);
+
 };

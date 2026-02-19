@@ -4,7 +4,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
+#include "HawnmunGameplayTags.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
+#include "Interfaces/CombatInterface.h"
+#include "Engine/OverlapResult.h"
 
 UHawnmunAbilitySystemComponent* UHawnmunFunctionLibrary::NativeGetHawnmunASCFromActor(AActor* InActor)
 {
@@ -52,4 +55,76 @@ bool UHawnmunFunctionLibrary::IsTargetPawnHostile(const APawn* QueryPawn, const 
 		return QueryTeamAgent->GetGenericTeamId() != TargetTeamAgent->GetGenericTeamId();
 	}
 	return false;
+}
+
+FGameplayEffectContextHandle UHawnmunFunctionLibrary::ApplyDamageEffect(FDamageEffectParams DamageEffectParams)
+{
+	const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+
+	FGameplayEffectContextHandle EffectContextHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceAvatarActor);
+
+	const FGameplayEffectSpecHandle SpecHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContextHandle);
+	SpecHandle.Data->SetSetByCallerMagnitude(DamageEffectParams.DamageType, DamageEffectParams.BaseDamage);
+
+	const FGameplayTag HitReactTag = HawnmunGameplayTags::Event_HitReact;
+	DamageEffectParams.TargetAbilitySystemComponent->TryActivateAbilitiesByTag(HitReactTag.GetSingleTagContainer());
+
+	DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+	return EffectContextHandle;
+}
+
+void UHawnmunFunctionLibrary::GetLivePlayersWithinCircle(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, 
+	const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin)
+{
+	FCollisionQueryParams SphereParams;
+
+	SphereParams.AddIgnoredActors(ActorsToIgnore);
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		TArray<FOverlapResult> Overlaps;
+
+		World->OverlapMultiByObjectType(
+			Overlaps, 
+			SphereOrigin, 
+			FQuat::Identity,
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
+			FCollisionShape::MakeSphere(Radius), 
+			SphereParams);
+
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+			}
+		}
+	}
+}
+
+void UHawnmunFunctionLibrary::GetLivePlayersWithinLine(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, 
+	const TArray<AActor*>& ActorsToIgnore, const FVector& Start, const FVector& End)
+{
+	FCollisionQueryParams LineParams;
+
+	LineParams.AddIgnoredActors(ActorsToIgnore);
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		TArray<FHitResult> Overlaps;
+
+		World->LineTraceMultiByObjectType(
+			Overlaps,
+			Start,
+			End,
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
+			LineParams);
+
+		for (FHitResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+			}
+		}
+	}
 }

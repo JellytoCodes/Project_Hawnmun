@@ -9,6 +9,7 @@
 #include "Interfaces/CombatInterface.h"
 #include "HawnmunCharacterBase.generated.h"
 
+class UMotionWarpingComponent;
 class UBoxComponent;
 class UHawnmunAbilitySystemComponent;
 class UAttributeSet;
@@ -34,6 +35,9 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void Die() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MotionWarping")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;
@@ -70,9 +74,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat|Body")
 	TObjectPtr<UBoxComponent> RightHandCollisionBox;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Body")
-	FName WeaponCollisionBoxAttachBoneName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Body")
 	FName LeftHandCollisionBoxAttachBoneName;

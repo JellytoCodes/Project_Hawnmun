@@ -31,6 +31,8 @@ namespace HawnmunGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::State_Rolling, "State.Rolling")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::State_TargetLock, "State.TargetLock")
 
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Event_HitReact, "Event.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Event_Invincible, "Event.Invincible")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Event_SwitchTarget_Left, "Event.SwitchTarget.Left")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Event_SwitchTarget_Right, "Event.SwitchTarget.Right")
 
