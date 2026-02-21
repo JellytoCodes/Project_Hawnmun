@@ -1,6 +1,5 @@
 // Copyright (c) 2026 Project Hawnmun. All rights reserved.
 
-
 #include "AbilitySystem/Abilities/GameplayAbility_Rolling.h"
 
 #include "MotionWarpingComponent.h"
@@ -9,37 +8,80 @@
 
 void UGameplayAbility_Rolling::ComputeRollDirectionAndDistance()
 {
-	FVector CachedRollingDirection = GetHawnmunCharacterFromActorInfo()->GetLastMovementInputVector();
-	CachedRollingDirection.Normalize(0.0001);
+	AHawnmunPlayer* Char = GetHawnmunCharacterFromActorInfo();
+	if (!Char || !Char->MotionWarpingComponent) return;
 
-	
-
-	GetHawnmunCharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(
-		FName("RollingDirection"), 
-		FVector::ZeroVector, 
-		UKismetMathLibrary::MakeRotFromX(CachedRollingDirection));
-
-	FVector StartLoc = FVector::ZeroVector;
-	FVector EndLoc = FVector::ZeroVector;
-	GetActorStartEndLocation(CachedRollingDirection, StartLoc, EndLoc);
-
-	FHitResult HitResult;
-
-	GetWorld()->LineTraceSingleByObjectType(
-		HitResult,
-		StartLoc,
-		EndLoc,
-		ECC_WorldDynamic);
-
-	if (HitResult.IsValidBlockingHit())
+	FRotator CamRot = Char->GetActorRotation();
+	if (AController* C = Char->GetController())
 	{
-		GetHawnmunCharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(
-			FName("RollTargetLocation"),
-			HitResult.ImpactPoint);
+		CamRot = C->GetControlRotation();
+	}
+	CamRot.Pitch = 0.f;
+	CamRot.Roll  = 0.f;
+
+	FVector CamForward = FRotationMatrix(CamRot).GetUnitAxis(EAxis::X);
+	FVector CamRight   = FRotationMatrix(CamRot).GetUnitAxis(EAxis::Y);
+	CamForward.Z = 0.f;
+	CamRight.Z   = 0.f;
+	CamForward = CamForward.GetSafeNormal();
+	CamRight   = CamRight.GetSafeNormal();
+
+	FVector RollingDir = Char->GetLastMovementInputVector();
+	RollingDir.Z = 0.f;
+
+	if (RollingDir.IsNearlyZero())
+		RollingDir = CamForward;
+
+	RollingDir = RollingDir.GetSafeNormal();
+
+	const float FwdDot   = FVector::DotProduct(RollingDir, CamForward); // +면 화면 전방
+	const float RightDot = FVector::DotProduct(RollingDir, CamRight);   // +면 화면 우측
+
+	if (FMath::Abs(FwdDot) >= FMath::Abs(RightDot))
+	{
+		RollSection = (FwdDot >= 0.f) ? ERollSection::Forward : ERollSection::Backward;
 	}
 	else
 	{
-		GetHawnmunCharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(FName("RollTargetLocation"));
+		RollSection = (RightDot >= 0.f) ? ERollSection::Right : ERollSection::Left;
+	}
+
+	Char->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(
+		FName("RollingDirection"),
+		FVector::ZeroVector,
+		UKismetMathLibrary::MakeRotFromX(RollingDir)
+	);
+
+	FVector StartLoc = FVector::ZeroVector;
+	FVector EndLoc   = FVector::ZeroVector;
+	GetActorStartEndLocation(RollingDir, StartLoc, EndLoc);
+
+	FHitResult HitResult;
+
+	FCollisionObjectQueryParams ObjParams;
+	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(RollGroundTrace), false, Char);
+
+	const bool bHit = GetWorld()->LineTraceSingleByObjectType(
+		HitResult,
+		StartLoc,
+		EndLoc,
+		ObjParams,
+		QueryParams
+	);
+
+	if (bHit && HitResult.IsValidBlockingHit())
+	{
+		Char->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(
+			FName("RollTargetLocation"),
+			HitResult.ImpactPoint
+		);
+	}
+	else
+	{
+		Char->MotionWarpingComponent->RemoveWarpTarget(FName("RollTargetLocation"));
 	}
 }
 

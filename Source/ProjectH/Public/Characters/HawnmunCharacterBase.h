@@ -36,8 +36,12 @@ public:
 
 	virtual void Die() override;
 
+	UFUNCTION(BlueprintCallable, Category = "AbilitySystem")
+	void ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType = EToggleDamageType::EquippedWeapon);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MotionWarping")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;

@@ -46,7 +46,16 @@ UAbilitySystemComponent* AHawnmunCharacterBase::GetAbilitySystemComponent() cons
 
 void AHawnmunCharacterBase::Die()
 {
+	
+}
 
+void AHawnmunCharacterBase::ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
+{
+	const ECollisionEnabled::Type CurrentCollisionType = bShouldEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
+
+	CurrentDamageType = ToggleDamageType;
+
+	SetToggleCollisionEnabled(CurrentDamageType, CurrentCollisionType);
 }
 
 void AHawnmunCharacterBase::BeginPlay()
