@@ -24,6 +24,7 @@ public :
 	UFUNCTION(BlueprintSetter)
 	void SetIsSprinting(const bool InSprinting) { bIsSprinting = InSprinting; }
 
+	virtual int32 GetCharacterLevel_Implementation() override;
 	virtual void Die() override;
 
 protected:

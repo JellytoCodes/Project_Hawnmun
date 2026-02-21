@@ -26,6 +26,11 @@ void AHawnmunEnemy::SetSpawnedActorByBlackBoardKey(AActor* spawnedActor)
 	}
 }
 
+int32 AHawnmunEnemy::GetCharacterLevel_Implementation()
+{
+	return 1;
+}
+
 void AHawnmunEnemy::Die()
 {
 	Super::Die();

@@ -19,6 +19,7 @@ public :
 
 	void SetSpawnedActorByBlackBoardKey(AActor* spawnedActor);
 
+	virtual int32 GetCharacterLevel_Implementation() override;
 	virtual void Die() override;
 
 protected :

@@ -35,6 +35,11 @@ AHawnmunPlayer::AHawnmunPlayer()
 }
 
 
+int32 AHawnmunPlayer::GetCharacterLevel_Implementation()
+{
+	return 1;
+}
+
 void AHawnmunPlayer::Die()
 {
 	Super::Die();

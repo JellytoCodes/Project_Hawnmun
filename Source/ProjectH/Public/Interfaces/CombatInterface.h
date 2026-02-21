@@ -17,6 +17,9 @@ class PROJECTH_API ICombatInterface
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetCharacterLevel();
+
 	virtual void Die() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)

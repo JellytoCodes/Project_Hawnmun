@@ -2,6 +2,7 @@
 
 #include "AbilitySystem/DataAsset_StartUpDataBase.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
+#include "ProjectH/ProjectH.h"
 
 void UDataAsset_StartUpDataBase::InitializeGameplayEffect(UAbilitySystemComponent* InASCToGive, EStartUpCharacterName StartUpCharacterName, int32 ApplyLevel)
 {
@@ -11,9 +12,27 @@ void UDataAsset_StartUpDataBase::InitializeGameplayEffect(UAbilitySystemComponen
 	{
 		for (const FHawnmunStartUpAttributeInfo& AttributeInfo : StartUpAttributeInfo)
 		{
-			if (!AttributeInfo.StartUpGameplayEffect || AttributeInfo.StartUpCharacterName != StartUpCharacterName) continue;
-			UGameplayEffect* EffectCDO = AttributeInfo.StartUpGameplayEffect->GetDefaultObject<UGameplayEffect>();
-			InASCToGive->ApplyGameplayEffectToSelf(EffectCDO, ApplyLevel, InASCToGive->MakeEffectContext());
+			if (!AttributeInfo.PrimaryGameplayEffect || !AttributeInfo.SecondaryGameplayEffect || !AttributeInfo.VitalGameplayEffect) continue;
+
+			if (AttributeInfo.StartUpCharacterName == StartUpCharacterName)
+			{
+				FGameplayEffectContextHandle ContextHandle = InASCToGive->MakeEffectContext();
+				ContextHandle.AddSourceObject(InASCToGive->GetOwnerActor());
+
+				{ // PrimaryGameplayEffect
+					const FGameplayEffectSpecHandle SpecHandle = InASCToGive->MakeOutgoingSpec(AttributeInfo.PrimaryGameplayEffect, ApplyLevel, ContextHandle);
+					InASCToGive->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), InASCToGive);				
+				}
+				{ // SecondaryGameplayEffect
+					const FGameplayEffectSpecHandle SpecHandle = InASCToGive->MakeOutgoingSpec(AttributeInfo.SecondaryGameplayEffect, ApplyLevel, ContextHandle);
+					Debug::Print(AttributeInfo.SecondaryGameplayEffect->GetPathName());
+					InASCToGive->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), InASCToGive);				
+				}
+				{ // VitalGameplayEffect
+					const FGameplayEffectSpecHandle SpecHandle = InASCToGive->MakeOutgoingSpec(AttributeInfo.VitalGameplayEffect, ApplyLevel, ContextHandle);
+					InASCToGive->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), InASCToGive);				
+				}
+			}
 		}
 	}
 }

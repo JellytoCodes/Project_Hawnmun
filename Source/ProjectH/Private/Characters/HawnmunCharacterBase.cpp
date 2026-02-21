@@ -78,7 +78,7 @@ void AHawnmunCharacterBase::AddCharacterAbilities() const
 			UHawnmunAbilitySystemComponent* HawnmunASC = CastChecked<UHawnmunAbilitySystemComponent>(HawnmunAbilitySystemComponent);
 
 			LoadedData->InitializeGameplayEffect(HawnmunASC, StartUpCharacterName, 1);
-			
+
 			HawnmunASC->AddCharacterActivateAbilities(LoadedData->StartUpOffensiveAbilities);
 			HawnmunASC->AddCharacterPassiveAbilities(LoadedData->StartUpPassiveAbilities);
 		}

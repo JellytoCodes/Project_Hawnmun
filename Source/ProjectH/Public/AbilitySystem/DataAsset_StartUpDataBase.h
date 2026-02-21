@@ -14,8 +14,9 @@ UENUM()
 enum class EStartUpCharacterName : uint8
 {
 	Player,
-	Melee,
-	Ranged
+	Pig,
+	WildBoar,
+	NineTailedFox
 };
 
 USTRUCT(BlueprintType)
@@ -27,7 +28,13 @@ struct FHawnmunStartUpAttributeInfo
 	EStartUpCharacterName StartUpCharacterName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> StartUpGameplayEffect;
+	TSubclassOf<UGameplayEffect> PrimaryGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> SecondaryGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> VitalGameplayEffect;
 };
 
 UCLASS()
