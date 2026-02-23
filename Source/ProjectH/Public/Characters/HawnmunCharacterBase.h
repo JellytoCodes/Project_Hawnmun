@@ -7,6 +7,7 @@
 #include "AbilitySystem/DataAsset_StartUpDataBase.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
+#include "Types/HawnmunStructTypes.h"
 #include "HawnmunCharacterBase.generated.h"
 
 class UMotionWarpingComponent;
@@ -34,7 +35,14 @@ public:
 	UFUNCTION(BlueprintPure)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+#pragma region CombatInterface
 	virtual void Die() override;
+	virtual FOnDeathSignature& GetOnDeathDelegate() override;
+	virtual FOnDamageSignature& GetOnDamageDelegate() override;
+
+	FOnDeathSignature OnDeathDelegate;
+	FOnDamageSignature OnDamageDelegate;
+#pragma endregion
 
 	UFUNCTION(BlueprintCallable, Category = "AbilitySystem")
 	void ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType = EToggleDamageType::EquippedWeapon);
@@ -42,6 +50,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MotionWarping")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
+	UPROPERTY(BlueprintReadWrite)
+	FDamageEffectParams CombatDamageEffectParams;
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;

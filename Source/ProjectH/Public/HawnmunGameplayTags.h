@@ -7,6 +7,9 @@
 
 namespace HawnmunGameplayTags
 {
+	void InitializeNativeGameplayTags();
+
+#pragma region Input Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_Locked)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_SpaceBar)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_LeftShift)
@@ -21,31 +24,56 @@ namespace HawnmunGameplayTags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_1)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_2)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Key_3)
+#pragma endregion
 
+#pragma region Cost Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cost_Sprint)
+#pragma endregion
 
+#pragma region Ability Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Rolling)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Sprint)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_TargetLock)
+#pragma endregion
 
+#pragma region State Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Stamina_RegenBlocked)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Stamina_Full)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Dead)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Rolling)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_TargetLock)
+#pragma endregion
 
+#pragma region Event Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitReact)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Invincible)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_SwitchTarget_Left)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_SwitchTarget_Right)
+#pragma endregion
 
+#pragma region DamageEffect Tags
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Fire)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Damage_Physical)
+
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Fire)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Stun)
+
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Chance)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Damage)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Frequency)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Duration)
+#pragma endregion
+
+#pragma region Enemy Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_Strafing)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_UnderAttack)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_Unblockable)
 
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Pig_MeleeAttack1)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Pig_MeleeAttack2)
+#pragma endregion
 
+#pragma region Attribute Tags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Strength)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Intelligence)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Primary_Resilience)
@@ -64,4 +92,8 @@ namespace HawnmunGameplayTags
 
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Resistance_Fire)
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Resistance_Physical)
+#pragma endregion
+
+	extern TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
+	extern TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
 }

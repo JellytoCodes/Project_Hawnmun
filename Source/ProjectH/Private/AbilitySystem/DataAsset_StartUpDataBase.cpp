@@ -25,7 +25,6 @@ void UDataAsset_StartUpDataBase::InitializeGameplayEffect(UAbilitySystemComponen
 				}
 				{ // SecondaryGameplayEffect
 					const FGameplayEffectSpecHandle SpecHandle = InASCToGive->MakeOutgoingSpec(AttributeInfo.SecondaryGameplayEffect, ApplyLevel, ContextHandle);
-					Debug::Print(AttributeInfo.SecondaryGameplayEffect->GetPathName());
 					InASCToGive->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), InASCToGive);				
 				}
 				{ // VitalGameplayEffect

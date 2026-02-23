@@ -8,6 +8,10 @@
 
 class UHawnmunGameplayAbility;
 
+// 타겟 디버깅 활성화 (Showdebug Abilitsystem 선택한 대상 정보 표시)
+// [/Script/GameplayAbilities.AbilitySystemGlobals]
+// bUseDebugTargetFromHud=true
+
 UCLASS()
 class PROJECTH_API UHawnmunAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -31,5 +35,5 @@ public :
 	bool IsPassiveAbility(const FGameplayAbilitySpec& Spec) const;
 
 protected :
-
+	
 };

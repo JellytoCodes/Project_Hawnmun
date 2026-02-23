@@ -19,8 +19,10 @@ public :
 
 	void SetSpawnedActorByBlackBoardKey(AActor* spawnedActor);
 
+#pragma region CombatInterface
 	virtual int32 GetCharacterLevel_Implementation() override;
 	virtual void Die() override;
+#pragma endregion
 
 protected :
 	virtual void InitAbilityActorInfo() override;

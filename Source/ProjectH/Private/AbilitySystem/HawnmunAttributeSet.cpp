@@ -4,10 +4,12 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
+#include "HawnmunFunctionLibrary.h"
 #include "HawnmunGameplayTags.h"
 #include "Interfaces/CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
+#include "ProjectH/ProjectH.h"
 
 UHawnmunAttributeSet::UHawnmunAttributeSet()
 {
@@ -88,7 +90,44 @@ void UHawnmunAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribu
 
 void UHawnmunAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 {
+	const float LocalIncomingDamage = GetIncomingDamage();
+	SetIncomingDamage(0.f);
+	if (LocalIncomingDamage > 0.f)
+	{
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
+		const bool bFatal = NewHealth <= 0.f;
+		if (bFatal)
+		{
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+			if (CombatInterface)
+			{
+				CombatInterface->Die();
+			}
+			// SendXPEvent(Props);
+		}
+		else
+		{
+			if (Props.TargetCharacter->Implements<UCombatInterface>())
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(HawnmunGameplayTags::Event_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+				const FVector& KnockbackForce = UHawnmunFunctionLibrary::GetKnockbackForce(Props.EffectContextHandle);
+				if (!KnockbackForce.IsNearlyZero(1.f))
+				{
+					Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+				}
+			}
+		}
+
+		const bool bBlock = UHawnmunFunctionLibrary::IsBlockedHit(Props.EffectContextHandle);
+		const bool bCriticalHit = UHawnmunFunctionLibrary::IsCriticalHit(Props.EffectContextHandle);
+		if (UHawnmunFunctionLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
+			Debuff(Props);
+	}
 }
 
 void UHawnmunAttributeSet::HandleIncomingXP(const FEffectProperties& Props)

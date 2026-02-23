@@ -8,7 +8,6 @@
 
 class UHawnmunGameplayAbility;
 class UAbilitySystemComponent;
-class UFatedBrandGameplayAbility;
 class UGameplayEffect;
 
 USTRUCT(BlueprintType)
@@ -25,9 +24,6 @@ struct FDamageEffectParams
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
-	FGameplayTag DamageType;
-
-	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> SourceAbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -38,6 +34,48 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	float AbilityLevel = 1.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FGameplayTag DamageType = FGameplayTag();
+
+	UPROPERTY(BlueprintReadWrite)
+	float DebuffChance = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DebuffDamage = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DebuffDuration = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DebuffFrequency = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float DeathImpulseMagnitude = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector DeathImpulse = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite)
+	float KnockbackForceMagnitude = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float KnockbackChance = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector KnockbackForce = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRadialDamage = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageInnerRadius = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageOuterRadius = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector RadialDamageOrigin = FVector::ZeroVector;
 };
 
 USTRUCT(BlueprintType)
