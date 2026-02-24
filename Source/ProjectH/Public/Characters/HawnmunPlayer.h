@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/HawnmunCharacterBase.h"
+#include "Interfaces/PlayerInterface.h"
 #include "HawnmunPlayer.generated.h"
 
 class AHawnmunPlayerController;
@@ -11,7 +12,7 @@ class UCameraComponent;
 class USpringArmComponent;
 
 UCLASS()
-class PROJECTH_API AHawnmunPlayer : public AHawnmunCharacterBase
+class PROJECTH_API AHawnmunPlayer : public AHawnmunCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -24,9 +25,15 @@ public :
 	UFUNCTION(BlueprintSetter)
 	void SetIsSprinting(const bool InSprinting) { bIsSprinting = InSprinting; }
 
+#pragma region CombatInterface
 	virtual int32 GetCharacterLevel_Implementation() override;
 	virtual void Die() override;
+#pragma endregion
 
+#pragma region PlayerInterface
+	virtual void EnableMappingContext_Implementation() override;
+	virtual void DisableMappingContext_Implementation() override;
+#pragma endregion
 protected:
 	virtual void InitAbilityActorInfo() override;
 

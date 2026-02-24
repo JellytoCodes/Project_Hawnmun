@@ -19,6 +19,22 @@ FGenericTeamId AHawnmunPlayerController::GetGenericTeamId() const
 	return PlayerId;
 }
 
+void AHawnmunPlayerController::EnableDefaultMappingContext()
+{
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(PlayerContext, 0);	
+	}
+}
+
+void AHawnmunPlayerController::DisableDefaultMappingContext()
+{
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(PlayerContext);	
+	}
+}
+
 void AHawnmunPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,10 +44,7 @@ void AHawnmunPlayerController::BeginPlay()
 	check(PlayerContext);
 	check(InputConfig);
 
-	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(PlayerContext, 0);
-	}
+	EnableDefaultMappingContext();
 }
 
 void AHawnmunPlayerController::SetupInputComponent()

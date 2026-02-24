@@ -6,7 +6,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "ProjectH/ProjectH.h"
 
 ATransitionInteractActor::ATransitionInteractActor()
 {

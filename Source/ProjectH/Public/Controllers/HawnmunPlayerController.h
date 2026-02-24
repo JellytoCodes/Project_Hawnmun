@@ -26,6 +26,9 @@ public :
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
+	void EnableDefaultMappingContext();
+	void DisableDefaultMappingContext();
+
 protected :
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;

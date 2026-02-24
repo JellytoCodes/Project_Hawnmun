@@ -8,6 +8,7 @@
 #include "Controllers/HawnmunPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "HUD/HawnmunHUD.h"
 
 AHawnmunPlayer::AHawnmunPlayer()
 {
@@ -45,10 +46,24 @@ void AHawnmunPlayer::Die()
 	Super::Die();
 }
 
+void AHawnmunPlayer::EnableMappingContext_Implementation()
+{
+	PlayerController->EnableDefaultMappingContext();
+}
+
+void AHawnmunPlayer::DisableMappingContext_Implementation()
+{
+	PlayerController->DisableDefaultMappingContext();
+}
+
 void AHawnmunPlayer::InitAbilityActorInfo()
 {
 	if (!PlayerController.IsValid()) return;
-	
+
+	if (AHawnmunHUD* HawnmunHUD = Cast<AHawnmunHUD>(PlayerController.Get()->GetHUD()))
+	{
+		HawnmunHUD->InitOverlay(PlayerController.Get(), HawnmunAbilitySystemComponent, HawnmunAttributeSet);
+	}
 }
 
 void AHawnmunPlayer::BeginPlay()
@@ -60,6 +75,7 @@ void AHawnmunPlayer::BeginPlay()
 		const UGameplayEffect* staminaRegen = StaminaRegen.GetDefaultObject();
 		HawnmunAbilitySystemComponent->ApplyGameplayEffectToSelf(staminaRegen, 1, HawnmunAbilitySystemComponent->MakeEffectContext());
 	}
+	InitAbilityActorInfo();
 }
 
 void AHawnmunPlayer::PossessedBy(AController* NewController)
@@ -69,6 +85,5 @@ void AHawnmunPlayer::PossessedBy(AController* NewController)
 	if (!PlayerController.IsValid())
 		PlayerController = Cast<AHawnmunPlayerController>(NewController);
 
-	InitAbilityActorInfo();
 	AddCharacterAbilities();
 }
