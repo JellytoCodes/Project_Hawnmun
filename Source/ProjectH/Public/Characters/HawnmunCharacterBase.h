@@ -39,6 +39,8 @@ public:
 	virtual void Die() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual FOnDamageSignature& GetOnDamageDelegate() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
 
 	FOnDeathSignature OnDeathDelegate;
 	FOnDamageSignature OnDamageDelegate;

@@ -9,6 +9,7 @@
 #include "AbilitySystem/HawnmunGameplayEffectContext.h"
 #include "Interfaces/CombatInterface.h"
 #include "Engine/OverlapResult.h"
+#include "ProjectH/ProjectH.h"
 
 UHawnmunAbilitySystemComponent* UHawnmunFunctionLibrary::NativeGetHawnmunASCFromActor(AActor* InActor)
 {
@@ -251,9 +252,13 @@ void UHawnmunFunctionLibrary::GetLivePlayersWithinRadius(const UObject* WorldCon
 	TArray<FOverlapResult> Overlaps;
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
-		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, 
-		FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), 
-		FCollisionShape::MakeSphere(Radius), SphereParams);
+		World->OverlapMultiByObjectType(
+			Overlaps, 
+			SphereOrigin, 
+			FQuat::Identity, 
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), 
+			FCollisionShape::MakeSphere(Radius), 
+			SphereParams);
 
 		for (FOverlapResult& Overlap : Overlaps)
 		{

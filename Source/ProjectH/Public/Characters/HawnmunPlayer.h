@@ -40,6 +40,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void DieEvent();
 private :
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -53,4 +55,5 @@ private :
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stamina")
 	TSubclassOf<UGameplayEffect> StaminaRegen;
+	
 };

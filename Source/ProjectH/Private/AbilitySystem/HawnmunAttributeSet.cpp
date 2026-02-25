@@ -145,13 +145,10 @@ void UHawnmunAttributeSet::HandleStamina(const FEffectProperties& Props)
 	const bool bIsFullNow = Props.SourceASC->HasMatchingGameplayTag(FullTag);
 
 	if (bShouldBeFull && !bIsFullNow)
-	{
 		Props.SourceASC->AddLooseGameplayTag(FullTag);
-	}
+
 	else if (!bShouldBeFull && bIsFullNow)
-	{
 		Props.SourceASC->RemoveLooseGameplayTag(FullTag);
-	}
 }
 
 void UHawnmunAttributeSet::Debuff(const FEffectProperties& Props)

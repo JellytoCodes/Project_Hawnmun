@@ -77,11 +77,25 @@ namespace HawnmunGameplayTags
 
 #pragma region Enemy Tags
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_Strafing, "Enemy.State.Strafing")
-	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_UnderAttack, "Enemy.State.UnderAttack")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_State_Unblockable, "Enemy.State.Unblockable")
 
-	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_Pig_MeleeAttack1, "Enemy.Pig.MeleeAttack1")
-	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_Pig_MeleeAttack2, "Enemy.Pig.MeleeAttack2")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_Pig_MeleeAttack, "Enemy.Pig.MeleeAttack")
+
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_LeftSlam, "Enemy.WildBoar.LeftSlam")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_RightSwing, "Enemy.WildBoar.RightSwing")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_DoubleSlam, "Enemy.WildBoar.DoubleSlam")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_Stomp, "Enemy.WildBoar.Stomp")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_LeapSmash, "Enemy.WildBoar.LeapSmash")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_WildBoar_Charge, "Enemy.WildBoar.Charge")
+
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_FoxFireVolley, "Enemy.NineTailed.FoxFireVolley")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_FoxFireDrop, "Enemy.NineTailed.FoxFireDrop")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_PortalBite, "Enemy.NineTailed.PortalBite")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_PortalBreath, "Enemy.NineTailed.PortalBreath")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_PortalBreathCombo, "Enemy.NineTailed.PortalBreathCombo")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_FoxFireGroggy, "Enemy.NineTailed.FoxFireGroggy")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_CharmIllusion, "Enemy.NineTailed.CharmIllusion")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Enemy_NineTailed_ClawSwipe, "Enemy.NineTailed.ClawSwipe")
 #pragma endregion
 
 #pragma region Attribute Tags

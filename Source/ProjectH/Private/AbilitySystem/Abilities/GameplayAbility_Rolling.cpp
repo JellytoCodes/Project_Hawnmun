@@ -5,6 +5,7 @@
 #include "MotionWarpingComponent.h"
 #include "Characters/HawnmunPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "ProjectH/ProjectH.h"
 
 void UGameplayAbility_Rolling::ComputeRollDirectionAndDistance()
 {
@@ -38,13 +39,9 @@ void UGameplayAbility_Rolling::ComputeRollDirectionAndDistance()
 	const float RightDot = FVector::DotProduct(RollingDir, CamRight);   // +면 화면 우측
 
 	if (FMath::Abs(FwdDot) >= FMath::Abs(RightDot))
-	{
 		RollSection = (FwdDot >= 0.f) ? ERollSection::Forward : ERollSection::Backward;
-	}
 	else
-	{
 		RollSection = (RightDot >= 0.f) ? ERollSection::Right : ERollSection::Left;
-	}
 
 	Char->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(
 		FName("RollingDirection"),
@@ -59,8 +56,7 @@ void UGameplayAbility_Rolling::ComputeRollDirectionAndDistance()
 	FHitResult HitResult;
 
 	FCollisionObjectQueryParams ObjParams;
-	ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjParams.AddObjectTypesToQuery(ECC_Environment);
 
 	FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(RollGroundTrace), false, Char);
 

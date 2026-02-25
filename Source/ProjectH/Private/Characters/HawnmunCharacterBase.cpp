@@ -59,6 +59,16 @@ FOnDamageSignature& AHawnmunCharacterBase::GetOnDamageDelegate()
 	return OnDamageDelegate;
 }
 
+bool AHawnmunCharacterBase::IsDead_Implementation() const
+{
+	return false;
+}
+
+AActor* AHawnmunCharacterBase::GetAvatar_Implementation()
+{
+	return this;
+}
+
 void AHawnmunCharacterBase::ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
 {
 	const ECollisionEnabled::Type CurrentCollisionType = bShouldEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;

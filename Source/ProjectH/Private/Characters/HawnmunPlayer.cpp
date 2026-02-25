@@ -43,17 +43,23 @@ int32 AHawnmunPlayer::GetCharacterLevel_Implementation()
 
 void AHawnmunPlayer::Die()
 {
-	Super::Die();
+	DieEvent();
 }
 
 void AHawnmunPlayer::EnableMappingContext_Implementation()
 {
 	PlayerController->EnableDefaultMappingContext();
+
+	if (auto* HawnmunHUD = Cast<AHawnmunHUD>(PlayerController->GetHUD()))
+		HawnmunHUD->ShowOverlay();
 }
 
 void AHawnmunPlayer::DisableMappingContext_Implementation()
 {
 	PlayerController->DisableDefaultMappingContext();
+
+	if (auto* HawnmunHUD = Cast<AHawnmunHUD>(PlayerController->GetHUD()))
+		HawnmunHUD->HideOverlay();
 }
 
 void AHawnmunPlayer::InitAbilityActorInfo()
@@ -61,9 +67,7 @@ void AHawnmunPlayer::InitAbilityActorInfo()
 	if (!PlayerController.IsValid()) return;
 
 	if (AHawnmunHUD* HawnmunHUD = Cast<AHawnmunHUD>(PlayerController.Get()->GetHUD()))
-	{
 		HawnmunHUD->InitOverlay(PlayerController.Get(), HawnmunAbilitySystemComponent, HawnmunAttributeSet);
-	}
 }
 
 void AHawnmunPlayer::BeginPlay()

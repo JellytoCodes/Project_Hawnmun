@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "HawnmunGameplayTags.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
+#include "HUD/HawnmunHUD.h"
 #include "Input/HawnmunEnhancedInputComponent.h"
 
 AHawnmunPlayerController::AHawnmunPlayerController()
@@ -19,20 +20,16 @@ FGenericTeamId AHawnmunPlayerController::GetGenericTeamId() const
 	return PlayerId;
 }
 
-void AHawnmunPlayerController::EnableDefaultMappingContext()
+void AHawnmunPlayerController::EnableDefaultMappingContext() const
 {
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(PlayerContext, 0);	
-	}
+		Subsystem->AddMappingContext(PlayerContext, 0);
 }
 
-void AHawnmunPlayerController::DisableDefaultMappingContext()
+void AHawnmunPlayerController::DisableDefaultMappingContext() const
 {
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->RemoveMappingContext(PlayerContext);	
-	}
+		Subsystem->RemoveMappingContext(PlayerContext);
 }
 
 void AHawnmunPlayerController::BeginPlay()
@@ -51,9 +48,7 @@ void AHawnmunPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UHawnmunEnhancedInputComponent* HawnmunInputComponent = CastChecked<UHawnmunEnhancedInputComponent>(InputComponent);
-
-	if (HawnmunInputComponent)
+	if (UHawnmunEnhancedInputComponent* HawnmunInputComponent = CastChecked<UHawnmunEnhancedInputComponent>(InputComponent))
 	{
 		HawnmunInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 		HawnmunInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
@@ -107,8 +102,9 @@ void AHawnmunPlayerController::SwitchTarget(const FInputActionValue& InputAction
 	const float SwitchValue = InputActionValue.Get<float>();
 	const FGameplayEventData Data;
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetPawn(),
-		SwitchValue > 0.f ? HawnmunGameplayTags::Event_SwitchTarget_Left : HawnmunGameplayTags::Event_SwitchTarget_Right,
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		GetPawn(),
+		SwitchValue > 0.f ? HawnmunGameplayTags::Event_SwitchTarget_Left : HawnmunGameplayTags::Event_SwitchTarget_Right, 
 		Data);
 }
 
