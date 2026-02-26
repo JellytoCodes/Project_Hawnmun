@@ -75,6 +75,4 @@ void AHawnmunEnemy::PossessedBy(AController* NewController)
 
 	if (HawnmunAbilitySystemComponent)
 		AddCharacterAbilities();
-
-	
 }

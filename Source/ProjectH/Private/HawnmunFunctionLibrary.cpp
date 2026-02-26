@@ -270,6 +270,62 @@ void UHawnmunFunctionLibrary::GetLivePlayersWithinRadius(const UObject* WorldCon
 	}
 }
 
+void UHawnmunFunctionLibrary::GetLivePlayersWithinLine(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors,
+	const TArray<AActor*>& ActorsToIgnore, const FVector& Start, const FVector& End)
+{
+	FCollisionQueryParams LineParams;
+
+	LineParams.AddIgnoredActors(ActorsToIgnore);
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		TArray<FHitResult> Overlaps;
+
+		World->LineTraceMultiByObjectType(
+			Overlaps,
+			Start,
+			End,
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
+			LineParams);
+
+		for (FHitResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+			}
+		}
+	}
+}
+
+void UHawnmunFunctionLibrary::GetLivePlayersWithinBox(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors,
+	const TArray<AActor*>& ActorsToIgnore, const FVector& Extent, const FRotator& BoxRotation, const FVector& BoxOrigin)
+{
+	FCollisionQueryParams BoxParams;
+
+	BoxParams.AddIgnoredActors(ActorsToIgnore);
+	TArray<FOverlapResult> Overlaps;
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		World->OverlapMultiByObjectType(
+			Overlaps,
+			BoxOrigin,
+			BoxRotation.Quaternion(),
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
+			FCollisionShape::MakeBox(Extent),
+			BoxParams);
+
+		DrawDebugBox(World, BoxOrigin, Extent, BoxRotation.Quaternion(), FColor::Red, false, 5.f, 0, 5.f);
+
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+			}
+		}
+	}
+}
+
 void UHawnmunFunctionLibrary::SetIsRadialDamageEffectParam(FDamageEffectParams& DamageEffectParams, bool bIsRadial, float InnerRadius, float OuterRadius, FVector Origin)
 {
 	DamageEffectParams.bIsRadialDamage = bIsRadial;
@@ -339,31 +395,4 @@ FGameplayEffectContextHandle UHawnmunFunctionLibrary::ApplyDamageEffect(FDamageE
 
 	DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	return EffectContextHandle;
-}
-
-void UHawnmunFunctionLibrary::GetLivePlayersWithinLine(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, 
-	const TArray<AActor*>& ActorsToIgnore, const FVector& Start, const FVector& End)
-{
-	FCollisionQueryParams LineParams;
-
-	LineParams.AddIgnoredActors(ActorsToIgnore);
-	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
-	{
-		TArray<FHitResult> Overlaps;
-
-		World->LineTraceMultiByObjectType(
-			Overlaps,
-			Start,
-			End,
-			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
-			LineParams);
-
-		for (FHitResult& Overlap : Overlaps)
-		{
-			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
-			{
-				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
-			}
-		}
-	}
 }

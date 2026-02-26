@@ -122,6 +122,9 @@ public :
 	UFUNCTION(BlueprintCallable, Category = "HawnmunFunctionLibrary|GameplayMechanics")
 	static void GetLivePlayersWithinLine(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const FVector& Start, const FVector& End);
 
+	UFUNCTION(BlueprintCallable, Category = "HawnmunFunctionLibrary|GameplayMechanics")
+	static void GetLivePlayersWithinBox(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const FVector& Extent, const FRotator& BoxRotation, const FVector& BoxOrigin);
+
 	UFUNCTION(BlueprintPure, Category = "HawnmunFunctionLibrary|GameplayMechanics")
 	static bool IsTargetPawnHostile(const APawn* QueryPawn, const APawn* TargetPawn);
 
