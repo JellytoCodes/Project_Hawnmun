@@ -21,7 +21,7 @@ public class ProjectH : ModuleRules
 			"AIModule",
 			"Niagara",
 			"MotionWarping",
-			"UMG"
+			"UMG",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

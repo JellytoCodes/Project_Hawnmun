@@ -23,7 +23,6 @@ void AHawnmunProjectileActor::BeginPlay()
 	Super::BeginPlay();
 
 	SetLifeSpan(LifeSpan);
-
 }
 void AHawnmunProjectileActor::Destroyed()
 {
@@ -41,7 +40,6 @@ bool AHawnmunProjectileActor::IsValidOverlap(AActor* OtherActor) const
 
 	return true;
 }
-
 
 void AHawnmunProjectileActor::OnHit()
 {

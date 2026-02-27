@@ -69,6 +69,12 @@ AActor* AHawnmunCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
+FVector AHawnmunCharacterBase::GetProjectileSpawnSocketLocation_Implementation(const FName SocketName)
+{
+	const FVector SocketLocation = GetMesh()->GetSocketLocation(SocketName);
+	return SocketLocation != FVector::ZeroVector ? SocketLocation : FVector();
+}
+
 void AHawnmunCharacterBase::ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
 {
 	const ECollisionEnabled::Type CurrentCollisionType = bShouldEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;

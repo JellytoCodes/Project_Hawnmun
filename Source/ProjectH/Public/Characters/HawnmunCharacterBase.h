@@ -41,6 +41,7 @@ public:
 	virtual FOnDamageSignature& GetOnDamageDelegate() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
+	virtual FVector GetProjectileSpawnSocketLocation_Implementation(const FName SocketName) override;
 
 	FOnDeathSignature OnDeathDelegate;
 	FOnDamageSignature OnDamageDelegate;

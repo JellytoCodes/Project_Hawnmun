@@ -6,6 +6,9 @@
 #include "Characters/HawnmunEnemy.h"
 #include "HawnmunNineTailed.generated.h"
 
+class UNiagaraSystem;
+class AFoxFireVolleyActor;
+class AFoxFireDropActor;
 class APortalBreathActor;
 
 UCLASS()
@@ -24,12 +27,36 @@ public :
 	UFUNCTION(BlueprintPure)
 	APortalBreathActor* GetRandomPortalBreath();
 
+	UFUNCTION(BlueprintCallable)
+	void ActiveFoxFireCardinalDrop(const FDamageEffectParams& DamageEffectParams);
+
+	UFUNCTION(BlueprintCallable)
+	void ActiveFoxFireDiagonalDrop(const FDamageEffectParams& DamageEffectParams);
+
 protected :
 	virtual void BeginPlay() override;
 
-
 private:
 	UPROPERTY(Transient)
-	TArray<APortalBreathActor*> FieldPortalBreath;
+	TArray<TObjectPtr<APortalBreathActor>> FieldPortalBreath;
+
+	void CreatePortalBreath();
+
+	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
+	TSoftClassPtr<AFoxFireDropActor> SpawnClass;
+
+	UPROPERTY(Transient)
+	TArray< TObjectPtr<AFoxFireDropActor>> FoxFireCardinalDrop;
+
+	UPROPERTY(Transient)
+	TArray< TObjectPtr<AFoxFireDropActor>> FoxFireDiagonalDrop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
+	TArray<FVector> CardinalDrop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
+	TArray<FVector> DiagonalDrop;
+
+	void CreateFoxFireDrops();
 
 };
