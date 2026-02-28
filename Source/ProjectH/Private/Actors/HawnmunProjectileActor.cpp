@@ -24,19 +24,12 @@ void AHawnmunProjectileActor::BeginPlay()
 
 	SetLifeSpan(LifeSpan);
 }
-void AHawnmunProjectileActor::Destroyed()
-{
-	Super::Destroyed();
-}
-
 
 bool AHawnmunProjectileActor::IsValidOverlap(AActor* OtherActor) const
 {
 	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return false;
 	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
 	if (SourceAvatarActor == OtherActor) return false;
-	if (OtherActor == this || OtherActor->IsA(AHawnmunProjectileActor::StaticClass())) return false;
-	if (UHawnmunFunctionLibrary::IsTargetPawnHostile(Cast<APawn>(SourceAvatarActor), Cast<APawn>(OtherActor)) == false) return false;
 
 	return true;
 }
@@ -48,7 +41,7 @@ void AHawnmunProjectileActor::OnHit()
 
 void AHawnmunProjectileActor::ApplyEffectToTarget(AActor* TargetActor)
 {
-	if (!IsValidOverlap(TargetActor)) return;
+	if (IsValidOverlap(TargetActor) == false) return;
 	if (!bHit) OnHit();
 
 	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
@@ -72,5 +65,3 @@ void AHawnmunProjectileActor::ApplyEffectToTarget(AActor* TargetActor)
 	}
 	if (bDestroyOnEffectApplication) Destroy();
 }
-
-
