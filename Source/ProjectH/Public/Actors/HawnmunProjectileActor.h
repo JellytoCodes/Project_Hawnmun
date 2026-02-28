@@ -51,4 +51,6 @@ private :
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 10.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayCue")
+	FGameplayTag GameplayTagCue;
 };

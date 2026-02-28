@@ -128,6 +128,9 @@ public :
 	UFUNCTION(BlueprintPure, Category = "HawnmunFunctionLibrary|GameplayMechanics")
 	static bool IsTargetPawnHostile(const APawn* QueryPawn, const APawn* TargetPawn);
 
+	UFUNCTION(BlueprintCallable, Category = "HawnmunFunctionLibrary|GameplayMechanics")
+	static void HawnmunExecuteGameplayCue(const UAbilitySystemComponent* ASC, const FGameplayTag GameplayTagCue);
+
 	//static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 #pragma endregion
 

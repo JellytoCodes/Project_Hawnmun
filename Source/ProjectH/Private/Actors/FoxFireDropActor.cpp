@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/HawnmunAbilitySystemComponent.h"
 #include "HawnmunFunctionLibrary.h"
+#include "HawnmunGameplayTags.h"
 #include "Interfaces/PlayerInterface.h"
 #include "NiagaraComponent.h"
 #include "ProjectH/ProjectH.h"
@@ -31,8 +32,24 @@ void AFoxFireDropActor::ActiveFoxFireDrop(TArray<AActor*>& OutOverlappingActors,
 	{
 		if (Actor->Implements<UPlayerInterface>())
 		{
-			CombatDamageEffectParams.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
-			UHawnmunFunctionLibrary::ApplyDamageEffect(CombatDamageEffectParams);
+			UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor);
+
+			const bool bIsRolling = TargetASC->HasMatchingGameplayTag(HawnmunGameplayTags::State_Rolling);
+
+			FGameplayEventData EventData;
+			EventData.Instigator = CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+			EventData.Target = TargetASC->GetAvatarActor();
+
+			if (bIsRolling)
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+			}
+			else
+			{
+				CombatDamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+				UHawnmunFunctionLibrary::ApplyDamageEffect(CombatDamageEffectParams);
+			}
 		}
 	}
 }

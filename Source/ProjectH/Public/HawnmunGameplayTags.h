@@ -108,6 +108,12 @@ namespace HawnmunGameplayTags
 	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Attributes_Resistance_Physical)
 #pragma endregion
 
+#pragma region Gameplay Cue
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_HitReact)
+	PROJECTH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_NineTailed_FoxFireVolley)
+
+#pragma endregion
+
 	extern TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 	extern TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
 }

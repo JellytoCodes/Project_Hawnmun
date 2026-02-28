@@ -59,6 +59,7 @@ void AHawnmunProjectileActor::ApplyEffectToTarget(AActor* TargetActor)
 		}
 		else
 		{
+			UHawnmunFunctionLibrary::HawnmunExecuteGameplayCue(TargetASC, GameplayTagCue);
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 			UHawnmunFunctionLibrary::ApplyDamageEffect(DamageEffectParams);
 		}

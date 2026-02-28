@@ -9,6 +9,7 @@
 #include "AbilitySystem/HawnmunGameplayEffectContext.h"
 #include "Interfaces/CombatInterface.h"
 #include "Engine/OverlapResult.h"
+#include "GameplayCueManager.h"
 #include "ProjectH/ProjectH.h"
 
 UHawnmunAbilitySystemComponent* UHawnmunFunctionLibrary::NativeGetHawnmunASCFromActor(AActor* InActor)
@@ -370,6 +371,16 @@ bool UHawnmunFunctionLibrary::IsTargetPawnHostile(const APawn* QueryPawn, const 
 		return QueryTeamAgent->GetGenericTeamId() != TargetTeamAgent->GetGenericTeamId();
 	}
 	return false;
+}
+
+void UHawnmunFunctionLibrary::HawnmunExecuteGameplayCue(const UAbilitySystemComponent* ASC, const FGameplayTag GameplayTagCue)
+{
+	if (ASC == nullptr || GameplayTagCue.IsValid() == false) return;
+
+	FGameplayCueParameters CueParams;
+	CueParams.SourceObject = ASC;
+
+	UGameplayCueManager::ExecuteGameplayCue_NonReplicated(ASC->GetAvatarActor(), GameplayTagCue, CueParams);
 }
 
 FGameplayEffectContextHandle UHawnmunFunctionLibrary::ApplyDamageEffect(FDamageEffectParams DamageEffectParams)

@@ -153,12 +153,22 @@ void AHawnmunCharacterBase::OnHitTargetActor(AActor* HitActor)
 {
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
 
+	const bool bIsRolling = TargetASC->HasMatchingGameplayTag(HawnmunGameplayTags::State_Rolling);
+
 	FGameplayEventData EventData;
 	EventData.Instigator = CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
 	EventData.Target = TargetASC->GetAvatarActor();
 
-	CombatDamageEffectParams.TargetAbilitySystemComponent = TargetASC;
-	UHawnmunFunctionLibrary::ApplyDamageEffect(CombatDamageEffectParams);
+	if (bIsRolling)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+	}
+	else
+	{
+		CombatDamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+		UHawnmunFunctionLibrary::ApplyDamageEffect(CombatDamageEffectParams);
+	}
 }
 
 void AHawnmunCharacterBase::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

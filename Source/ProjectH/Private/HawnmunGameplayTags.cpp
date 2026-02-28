@@ -118,4 +118,9 @@ namespace HawnmunGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Attributes_Resistance_Fire, "Attributes.Resistance.Fire")
 	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::Attributes_Resistance_Physical, "Attributes.Resistance.Physical")
 #pragma endregion
+
+#pragma region Gameplay Cue
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::GameplayCue_HitReact, "GameplayCue.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(HawnmunGameplayTags::GameplayCue_NineTailed_FoxFireVolley, "GameplayCue.NineTailed.FoxFireVolley")
+#pragma endregion
 }
