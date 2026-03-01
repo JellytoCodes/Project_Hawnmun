@@ -6,6 +6,7 @@
 #include "Characters/HawnmunEnemy.h"
 #include "HawnmunNineTailed.generated.h"
 
+class UNiagaraComponent;
 class UNiagaraSystem;
 class AFoxFireVolleyActor;
 class AFoxFireDropActor;
@@ -33,6 +34,12 @@ public :
 	UFUNCTION(BlueprintCallable)
 	void ActiveFoxFireDiagonalDrop(const FDamageEffectParams& DamageEffectParams);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ActivateCharmIllusionEffect();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DeactivateCharmIllusionEffect();
+
 protected :
 	virtual void BeginPlay() override;
 
@@ -59,4 +66,6 @@ private:
 
 	void CreateFoxFireDrops();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UNiagaraComponent> CharmIllusionEffect;
 };

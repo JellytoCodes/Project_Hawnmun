@@ -5,11 +5,14 @@
 #include "Actors/FoxFireDropActor.h"
 #include "Actors/PortalBreathActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
 #include "ProjectH/ProjectH.h"
 
 AHawnmunNineTailed::AHawnmunNineTailed()
 {
-
+	CharmIllusionEffect = CreateDefaultSubobject<UNiagaraComponent>("Effect");
+	CharmIllusionEffect->SetAutoActivate(false);
+	CharmIllusionEffect->SetupAttachment(GetMesh());
 }
 
 int32 AHawnmunNineTailed::GetCharacterLevel_Implementation()
