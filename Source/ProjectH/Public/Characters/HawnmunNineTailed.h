@@ -6,6 +6,7 @@
 #include "Characters/HawnmunEnemy.h"
 #include "HawnmunNineTailed.generated.h"
 
+class AHawnmunNineTailedIllusion;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class AFoxFireVolleyActor;
@@ -40,6 +41,18 @@ public :
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void DeactivateCharmIllusionEffect();
 
+	UFUNCTION(BlueprintCallable)
+	void ActivateIllusionsEffect();
+
+	UFUNCTION(BlueprintCallable)
+	void DeactivateIllusionsEffect();
+
+	UFUNCTION(BlueprintCallable)
+	void ShuffleNineTailedCharmIllusion();
+
+	UFUNCTION(BlueprintCallable)
+	void BackCenterLocation(const FDamageEffectParams& DamageEffectParams);
+
 protected :
 	virtual void BeginPlay() override;
 
@@ -50,22 +63,36 @@ private:
 	void CreatePortalBreath();
 
 	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
-	TSoftClassPtr<AFoxFireDropActor> SpawnClass;
+	TSoftClassPtr<AFoxFireDropActor> SpawnFoxFireDropClass;
 
 	UPROPERTY(Transient)
-	TArray< TObjectPtr<AFoxFireDropActor>> FoxFireCardinalDrop;
+	TArray<TObjectPtr<AFoxFireDropActor>> FoxFireCardinalDrop;
 
 	UPROPERTY(Transient)
-	TArray< TObjectPtr<AFoxFireDropActor>> FoxFireDiagonalDrop;
+	TArray<TObjectPtr<AFoxFireDropActor>> FoxFireDiagonalDrop;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
-	TArray<FVector> CardinalDrop;
+	TArray<FVector> CardinalDropLocation;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FoxFireDrop")
-	TArray<FVector> DiagonalDrop;
+	TArray<FVector> DiagonalDropLocation;
 
 	void CreateFoxFireDrops();
 
+	UPROPERTY(EditDefaultsOnly, Category = "NineTailedIllusion")
+	TSoftClassPtr<AHawnmunNineTailedIllusion> SpawnNineTailedIllusionClass;
+
+	UPROPERTY(Transient, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<TObjectPtr<AHawnmunNineTailedIllusion>> NineTailedIllusion;
+
+	UPROPERTY()
+	TArray<FVector> NineTailedIllusionLocation;
+
+	void CreateNineTailedIllusion();
+	void GenerateCirclePoints(float Radius);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> CharmIllusionEffect;
+
+	FVector CachedCenterLocation;
 };
