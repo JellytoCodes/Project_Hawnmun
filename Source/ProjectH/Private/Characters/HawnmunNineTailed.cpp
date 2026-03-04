@@ -79,10 +79,19 @@ void AHawnmunNineTailed::ShuffleNineTailedCharmIllusion()
 
 	int idx = 0;
 
-	SetActorLocation(NineTailedIllusionLocation[idx++]);
+	FVector RealLoc = NineTailedIllusionLocation[idx++];
+	FRotator RealRot = (CachedCenterLocation - RealLoc).Rotation();
+	SetActorLocationAndRotation(RealLoc, RealRot);
 
 	for (auto& Illusion : NineTailedIllusion)
-		Illusion->SetActorLocation(NineTailedIllusionLocation[idx++]);
+	{
+		FVector IllusionLoc = NineTailedIllusionLocation[idx++];
+		FRotator IllusionRot = (CachedCenterLocation - IllusionLoc).Rotation();
+		IllusionRot.Pitch = 0.f;
+		IllusionRot.Roll = 0.f;
+		Illusion->SetActorLocationAndRotation(IllusionLoc, IllusionRot);
+	}
+		
 }
 
 void AHawnmunNineTailed::BackCenterLocation(const FDamageEffectParams& DamageEffectParams)
@@ -94,7 +103,6 @@ void AHawnmunNineTailed::BackCenterLocation(const FDamageEffectParams& DamageEff
 		Illusion->CombatDamageEffectParams = DamageEffectParams;
 		Illusion->CauseDamage();
 	}
-		
 }
 
 void AHawnmunNineTailed::BeginPlay()
