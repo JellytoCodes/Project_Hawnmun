@@ -21,9 +21,23 @@ AHawnmunEnemy::AHawnmunEnemy()
 
 void AHawnmunEnemy::SetSpawnedActorByBlackBoardKey(AActor* spawnedActor)
 {
-		if (UBlackboardComponent* BlackboardComponent = HawnmunAIController->GetBlackboardComponent())
+	if (UBlackboardComponent* BlackboardComponent = HawnmunAIController->GetBlackboardComponent())
 	{
 		BlackboardComponent->SetValueAsObject("SpawnedActor", spawnedActor);
+		BlackboardComponent->SetValueAsBool("WaitForActivation", true);
+	}
+}
+
+void AHawnmunEnemy::SetEnemyActive(bool bActive, AActor* InActor)
+{
+	SetActorHiddenInGame(!bActive);
+
+	if (UBlackboardComponent* BlackboardComponent = HawnmunAIController->GetBlackboardComponent())
+	{
+		BlackboardComponent->SetValueAsBool("WaitForActivation", bActive);
+		
+		if (bActive && InActor)
+			BlackboardComponent->SetValueAsObject("TargetActor", InActor);
 	}
 }
 

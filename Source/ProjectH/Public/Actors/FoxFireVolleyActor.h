@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "FoxFireVolleyActor.generated.h"
 
+class AHawnmunEnemy;
 class USphereComponent;
 class USplineComponent;
 
@@ -20,10 +21,14 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-    UFUNCTION()
+    virtual void BeginPlay() override;
+	
+	UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
+    void PullSpawnEnemies();
+
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<USphereComponent> CollisionSphere;
 
@@ -33,8 +38,17 @@ private:
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<USplineComponent> PatrolSpline;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Patrol")
+    TSoftClassPtr<AHawnmunEnemy> SpawnEnemyClass;
+
     UPROPERTY(EditAnywhere, Category = "Patrol")
-    float MoveSpeed = 300.f; // 기본값 설정 [cite: 2026-03-02]
+    float MoveSpeed = 100.f;
 
     float CurrentDistance = 0.f;
+
+    UPROPERTY(EditAnywhere, Category = "Patrol", meta = (MakeEditWidget = true))
+    TArray<FVector> SpawnLocations;
+
+    UPROPERTY()
+    TArray<TObjectPtr<AHawnmunEnemy>> SpawnEnemies;
 };

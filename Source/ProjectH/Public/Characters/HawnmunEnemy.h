@@ -18,6 +18,7 @@ public :
 	AHawnmunEnemy();
 
 	void SetSpawnedActorByBlackBoardKey(AActor* spawnedActor);
+	void SetEnemyActive(bool bActive, AActor* InActor = nullptr);
 
 #pragma region CombatInterface
 	virtual int32 GetCharacterLevel_Implementation() override;

@@ -52,7 +52,6 @@ public:
 		*NewContext = *this;
 		if (GetHitResult())
 		{
-			// 깊은 복사(Deep Copy)를 통해 타격 정보 유실 방지
 			NewContext->AddHitResult(*GetHitResult(), true);
 		}
 		return NewContext;
@@ -103,7 +102,7 @@ struct TStructOpsTypeTraits<FHawnmunGameplayEffectContext> : public TStructOpsTy
 {
 	enum
 	{
-		// 네트워크 직렬화 플래그 제거, 복사만 활성화
+		// 복사만 활성화
 		WithCopy = true
 	};
 };
