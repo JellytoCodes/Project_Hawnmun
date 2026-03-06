@@ -49,8 +49,7 @@ void UGameplayAbility_Rolling::ComputeRollDirectionAndDistance()
 		UKismetMathLibrary::MakeRotFromX(RollingDir)
 	);
 
-	FVector StartLoc = FVector::ZeroVector;
-	FVector EndLoc   = FVector::ZeroVector;
+	FVector StartLoc, EndLoc;
 	GetActorStartEndLocation(RollingDir, StartLoc, EndLoc);
 
 	FHitResult HitResult;
