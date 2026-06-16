@@ -1,0 +1,204 @@
+﻿// Copyright (c) 2026 Project Hawnmun. All rights reserved.
+
+#include "Characters/HawnmunCharacterBase.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "HawnmunFunctionLibrary.h"
+#include "HawnmunGameplayTags.h"
+#include "AbilitySystem/HawnmunAbilitySystemComponent.h"
+#include "AbilitySystem/HawnmunAttributeSet.h"
+#include "Components/BoxComponent.h"
+#include "MotionWarpingComponent.h"
+#include "ProjectH/ProjectH.h"
+
+#pragma region Core And Initialization
+AHawnmunCharacterBase::AHawnmunCharacterBase()
+{
+	PrimaryActorTick.bCanEverTick = false;
+
+	Weapon = CreateDefaultSubobject<UStaticMeshComponent>("Weapon");
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
+	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Weapon->SetGenerateOverlapEvents(false);
+
+	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>("WeaponCollisionBox");
+	WeaponCollisionBox->SetupAttachment(Weapon);
+	WeaponCollisionBox->SetCollisionObjectType(ECC_Weapon);
+	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
+
+	LeftHandCollisionBox = CreateDefaultSubobject<UBoxComponent>("LeftHandCollisionBox");
+	LeftHandCollisionBox->SetupAttachment(GetMesh());
+	LeftHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	LeftHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
+	
+	RightHandCollisionBox = CreateDefaultSubobject<UBoxComponent>("RightHandCollisionBox");
+	RightHandCollisionBox->SetupAttachment(GetMesh());
+	RightHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
+
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
+}
+
+void AHawnmunCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AHawnmunCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}
+
+#if WITH_EDITOR
+void AHawnmunCharacterBase::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	
+	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(ThisClass, LeftHandCollisionBoxAttachBoneName))
+	{
+		LeftHandCollisionBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, LeftHandCollisionBoxAttachBoneName);
+	}
+
+	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(ThisClass, RightHandCollisionBoxAttachBoneName))
+	{
+		RightHandCollisionBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, RightHandCollisionBoxAttachBoneName);
+	}
+}
+#endif
+#pragma endregion
+
+#pragma region Ability System And Data
+UAbilitySystemComponent* AHawnmunCharacterBase::GetAbilitySystemComponent() const
+{
+	return CastChecked<UHawnmunAbilitySystemComponent>(HawnmunAbilitySystemComponent);
+}
+
+void AHawnmunCharacterBase::InitAbilityActorInfo()
+{
+}
+
+void AHawnmunCharacterBase::AddCharacterAbilities() const
+{
+	if (!StartUpData.IsNull())
+	{
+		if (UDataAsset_StartUpDataBase* LoadedData = StartUpData.LoadSynchronous())
+		{
+			UHawnmunAbilitySystemComponent* HawnmunASC = CastChecked<UHawnmunAbilitySystemComponent>(HawnmunAbilitySystemComponent);
+
+			LoadedData->InitializeGameplayEffect(HawnmunASC, StartUpCharacterName, 1);
+
+			HawnmunASC->AddCharacterActivateAbilities(LoadedData->StartUpOffensiveAbilities);
+			HawnmunASC->AddCharacterPassiveAbilities(LoadedData->StartUpPassiveAbilities);
+		}
+	}	
+}
+#pragma endregion
+
+#pragma region Combat Interface
+void AHawnmunCharacterBase::Die()
+{
+}
+
+FOnDeathSignature& AHawnmunCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeathDelegate;
+}
+
+FOnDamageSignature& AHawnmunCharacterBase::GetOnDamageDelegate()
+{
+	return OnDamageDelegate;
+}
+
+bool AHawnmunCharacterBase::IsDead_Implementation() const
+{
+	return HawnmunAbilitySystemComponent->HasMatchingGameplayTag(HawnmunGameplayTags::State_Dead);
+}
+
+AActor* AHawnmunCharacterBase::GetAvatar_Implementation()
+{
+	return this;
+}
+
+FVector AHawnmunCharacterBase::GetProjectileSpawnSocketLocation_Implementation(const FName SocketName)
+{
+	const FVector SocketLocation = GetMesh()->GetSocketLocation(SocketName);
+	return SocketLocation != FVector::ZeroVector ? SocketLocation : FVector();
+}
+
+ECombatDamageScalingStat AHawnmunCharacterBase::GetDamageScalingStat_Implementation() const
+{
+	return ECombatDamageScalingStat::Strength;
+}
+#pragma endregion
+
+#pragma region Combat Collision And Damage
+void AHawnmunCharacterBase::ToggleCurrentCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
+{
+	const ECollisionEnabled::Type CurrentCollisionType = bShouldEnable ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
+
+	CurrentDamageType = ToggleDamageType;
+
+	SetToggleCollisionEnabled(CurrentDamageType, CurrentCollisionType);
+}
+
+void AHawnmunCharacterBase::SetToggleCollisionEnabled(const EToggleDamageType ToggleDamageType, const ECollisionEnabled::Type CurrentCollisionType) const
+{
+	switch (ToggleDamageType)
+	{
+	case EToggleDamageType::EquippedWeapon:
+		WeaponCollisionBox->SetCollisionEnabled(CurrentCollisionType);
+		break;
+	case EToggleDamageType::LeftHand:
+		LeftHandCollisionBox->SetCollisionEnabled(CurrentCollisionType);
+		break;
+	case EToggleDamageType::RightHand:
+		RightHandCollisionBox->SetCollisionEnabled(CurrentCollisionType);
+		break;
+	default:
+		break;
+	}
+}
+
+void AHawnmunCharacterBase::OnHitTargetActor(AActor* HitActor)
+{
+	checkf(HitActor, TEXT("OnHitTargetActor failed: HitActor is null."));
+
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
+
+	checkf(TargetASC, TEXT("OnHitTargetActor failed: HitActor %s has no AbilitySystemComponent."), *GetNameSafe(HitActor));
+	checkf(CombatDamageEffectParams.SourceAbilitySystemComponent, TEXT("OnHitTargetActor failed: SourceAbilitySystemComponent is null on %s."), *GetNameSafe(this));
+	checkf(CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(), TEXT("OnHitTargetActor failed: Source ASC has no AvatarActor on %s."), *GetNameSafe(this));
+
+	const bool bIsRolling = TargetASC->HasMatchingGameplayTag(HawnmunGameplayTags::State_Rolling);
+
+	FGameplayEventData EventData;
+	EventData.Instigator = CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	EventData.Target = TargetASC->GetAvatarActor();
+
+	if (bIsRolling)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetASC->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(CombatDamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor(), HawnmunGameplayTags::Event_Invincible, EventData);
+	}
+	else
+	{
+		CombatDamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+		UHawnmunFunctionLibrary::ApplyDamageEffect(CombatDamageEffectParams);
+	}
+}
+
+void AHawnmunCharacterBase::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == this) return;
+	
+	if (OtherActor->Implements<UCombatInterface>())
+	{
+		APawn* HitPawn = Cast<APawn>(OtherActor);
+		if (UHawnmunFunctionLibrary::IsTargetPawnHostile(this, HitPawn) == false) return;
+
+		OnHitTargetActor(HitPawn);
+	
+		SetToggleCollisionEnabled(CurrentDamageType, ECollisionEnabled::NoCollision);
+	}
+}
+#pragma endregion
